@@ -1,22 +1,5 @@
 {
-    "version": 2,
-    "buildCommand": "sh build_files.sh",
-    "builds": [
-        {
-            "src": "job/wsgi.py",
-            "use": "@vercel/python",
-            "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
-        }
-    ],
-    "routes": [
-        {
-            "src": "/static/(.*)",
-            "dest": "/static/$1"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "job/wsgi.py"
-        }
-    ],
-    "outputDirectory": "staticfiles"
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/job/wsgi.py" }
+  ]
 }
