@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'rest_framework',
     
+    
     # main
     'jobapp.apps.JobappConfig',
     'account.apps.AccountConfig',
