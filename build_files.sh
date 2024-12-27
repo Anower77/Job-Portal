@@ -1,11 +1,9 @@
 # build_files.sh
-echo "Building the project..."
-python -m pip install --upgrade pip
+echo "Installing dependencies..."
 pip install -r requirements.txt
 
-echo "Make migrations..."
-python manage.py makemigrations
-python manage.py migrate
+echo "Collecting static files..."
+python manage.py collectstatic --noinput
 
-echo "Collect Static..."
-python manage.py collectstatic --noinput --clear 
+echo "Running migrations..."
+python manage.py migrate 
