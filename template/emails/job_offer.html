@@ -1,0 +1,25 @@
+{% autoescape off %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Offer Letter</title>
+</head>
+<body>
+    <h2>Dear {{ user.first_name }} {{ user.last_name }},</h2>
+    
+    <p>Congratulations! We are pleased to inform you that you have been selected for the position of "{{ job.title }}" at {{ job.company_name }}.</p>
+    
+    <h3>Job Details:</h3>
+    <ul>
+        <li>Position: {{ job.title }}</li>
+        <li>Company: {{ job.company_name }}</li>
+        <li>Location: {{ job.location }}</li>
+        <li>Type: {{ job.get_job_type_display }}</li>
+    </ul>
+    
+    <p>Please contact the employer at {{ employer.email }} to discuss the next steps.</p>
+    
+    <p>Best regards,<br>Job Portal Team</p>
+</body>
+</html>
+{% endautoescape %} 

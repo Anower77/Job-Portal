@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="site-section">
+    <div class="container">
+        <!-- Search Form -->
+        <form method="GET" action="{% url 'jobapp:search_result' %}" class="search-jobs-form mb-5">
+            <div class="row mb-5">
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                    <input name="job_title" 
+                           class="form-control" 
+                           type="text" 
+                           placeholder="Job title, Company..."
+                           value="{{ search_title }}">
+                </div>
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                    <select name="job_type" class="form-control">
+                        <option value="">Select Job Type</option>
+                        <option value="1" {% if search_type == '1' %}selected{% endif %}>Full Time</option>
+                        <option value="2" {% if search_type == '2' %}selected{% endif %}>Part Time</option>
+                        <option value="3" {% if search_type == '3' %}selected{% endif %}>Internship</option>
+                    </select>
+                </div>
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                    <input name="location" 
+                           class="form-control" 
+                           type="text" 
+                           placeholder="Location"
+                           value="{{ search_location }}">
+                </div>
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span class="icon-search icon mr-2"></span>Search
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Results -->
+        <div class="mb-5">
+            <h3 class="h3 mb-4">Found {{ total_jobs }} Jobs</h3>
+            {% if page_obj %}
+                {% for job in page_obj %}
+                <div class="job-post-item mb-4">
+                    <div class="job-post-item-header">
+                        <h2 class="mb-2"><a href="{% url 'jobapp:single-job' job.id %}">{{ job.title }}</a></h2>
+                        <div class="d-flex align-items-center">
+                            <div class="mr-3">
+                                <span class="icon-briefcase mr-1"></span> {{ job.company_name }}
+                            </div>
+                            <div class="mr-3">
+                                <span class="icon-room mr-1"></span> {{ job.location }}
+                            </div>
+                            <div>
+                                <span class="badge {% if job.job_type == '1' %}badge-success{% elif job.job_type == '2' %}badge-danger{% else %}badge-info{% endif %}">
+                                    {% if job.job_type == '1' %}Full Time
+                                    {% elif job.job_type == '2' %}Part Time
+                                    {% else %}Internship{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% include 'jobapp/paginator.html' %}
+            {% else %}
+                <p>No jobs found matching your criteria.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+      {% include 'head.html' %}
+      <body id="top">
+            {% include 'header.html' %}
+            {% block content %}{% endblock %}
+            {% include 'footer.html' %}
+            {% include 'scripts.html' %} 
+            {% block extra_scripts %} {% endblock %}
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            <script src="{% static 'js/sweet-alert-ajax.js' %}"></script>
+      </body>
+</html>

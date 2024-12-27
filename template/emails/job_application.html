@@ -1,0 +1,25 @@
+{% autoescape off %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Application Confirmation</title>
+</head>
+<body>
+    <h2>Hi {{ user.first_name }},</h2>
+    
+    <p>Your application for the position of "{{ job.title }}" at {{ job.company_name }} has been successfully submitted.</p>
+    
+    <h3>Job Details:</h3>
+    <ul>
+        <li>Position: {{ job.title }}</li>
+        <li>Company: {{ job.company_name }}</li>
+        <li>Location: {{ job.location }}</li>
+        <li>Type: {{ job.get_job_type_display }}</li>
+    </ul>
+    
+    <p>We will notify you of any updates regarding your application.</p>
+    
+    <p>Best regards,<br>Job Portal Team</p>
+</body>
+</html>
+{% endautoescape %} 
