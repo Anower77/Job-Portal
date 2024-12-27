@@ -1,5 +1,22 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/job/wsgi.py" }
-  ]
+  "version": 2,
+  "builds": [
+    {
+      "src": "job/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "job/wsgi.py"
+    }
+  ],
+  "env": {
+    "PYTHONUNBUFFERED": "1"
+  }
 }
