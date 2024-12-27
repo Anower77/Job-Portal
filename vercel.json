@@ -1,5 +1,6 @@
 {
     "version": 2,
+    "buildCommand": "sh build_files.sh",
     "builds": [
         {
             "src": "job/wsgi.py",
@@ -16,5 +17,6 @@
             "src": "/(.*)",
             "dest": "job/wsgi.py"
         }
-    ]
+    ],
+    "outputDirectory": "staticfiles"
 }
