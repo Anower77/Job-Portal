@@ -19,13 +19,13 @@ class Category(models.Model):
         return self.name
 
 class Job(models.Model):
-    user = models.ForeignKey(User, related_name='User', on_delete=models.CASCADE) 
+    user = models.ForeignKey(User, related_name='User', on_delete=models.CASCADE)
     title = models.CharField(max_length=300)
     description = RichTextField()
     tags = TaggableManager()
     location = models.CharField(max_length=300)
     job_type = models.CharField(choices=JOB_TYPE, max_length=1)
-    category = models.ForeignKey(Category,related_name='Category', on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='Category', on_delete=models.CASCADE)
     salary = models.CharField(max_length=30, blank=True)
     company_name = models.CharField(max_length=300)
     company_description = RichTextField(blank=True, null=True)
@@ -34,12 +34,6 @@ class Job(models.Model):
     is_published = models.BooleanField(default=False)
     is_closed = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now=True)
-    JOB_TYPE_CHOICES = (
-        ('full_time', 'Full Time'),
-        ('part_time', 'Part Time'),
-        ('internship', 'Internship'),
-    )
-    type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES, default='full_time')
 
     def __str__(self):
         return self.title

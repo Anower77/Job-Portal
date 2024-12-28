@@ -10,40 +10,54 @@ from ckeditor.widgets import CKEditorWidget
     
 
 class JobForm(forms.ModelForm):
+    job_type = forms.ChoiceField(
+        choices=JOB_TYPE,
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'placeholder': 'Select Job Type'
+        })
+    )
     
-    def __init__(self, *args, **kwargs):
-        forms.ModelForm.__init__(self, *args, **kwargs)
-        self.fields['title'].label = "Job Title :"
-        self.fields['location'].label = "Job Location :"
-        self.fields['salary'].label = "Salary :"
-        self.fields['description'].label = "Job Description :"
-        self.fields['tags'].label = "Tags :"
-        self.fields['last_date'].label = "Submission Deadline :"
-        self.fields['company_name'].label = "Company Name :"
-        self.fields['url'].label = "Website :"
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+            'placeholder': 'Select Category'
+        })
+    )
 
-
-
-
-        self.fields['title'].widget.attrs.update({'placeholder': 'eg : Software Developer', 'class': 'form-control'})
-        self.fields['location'].widget.attrs.update({'placeholder': 'eg : Bangladesh', 'class': 'form-control'})
-        self.fields['salary'].widget.attrs.update({'placeholder': '$800 - $1200', 'class': 'form-control'})
-        self.fields['tags'].widget.attrs.update({'placeholder': 'Use comma separated. eg: Python, JavaScript ', 'class': 'form-control'})                        
-        self.fields['last_date'].widget.attrs.update({'placeholder': 'YYYY-MM-DD ', 'class': 'form-control'})                        
-        self.fields['company_name'].widget.attrs.update({'placeholder': 'Company Name', 'class': 'form-control'})           
-        self.fields['url'].widget.attrs.update({'placeholder': 'https://example.com', 'class': 'form-control'})    
-
-
-    class Meta:
-        model = Job
-        exclude = ('user', 'is_published')
-        
     def __init__(self, *args, **kwargs):
         super(JobForm, self).__init__(*args, **kwargs)
+        self.fields['title'].label = "Job Title"
+        self.fields['location'].label = "Job Location"
+        self.fields['salary'].label = "Salary"
+        self.fields['description'].label = "Job Description"
+        self.fields['last_date'].label = "Application Deadline"
+        self.fields['company_name'].label = "Company Name"
+        self.fields['url'].label = "Company Website"
+
+        # Add form-control class to all fields
         for field in self.fields:
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
+
+    class Meta:
+        model = Job
+        fields = [
+            'title', 
+            'location',
+            'job_type',
+            'category',
+            'salary',
+            'description',
+            'tags',
+            'last_date',
+            'company_name',
+            'company_description',
+            'url'
+        ]
+        exclude = ('user', 'is_published', 'is_closed', 'timestamp')
 
     def clean_job_type(self):
         job_type = self.cleaned_data.get('job_type')
