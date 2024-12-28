@@ -27,8 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-&c0+0gn1+n7^=2t0as2lg)b4akg0ce656&z9-peqo_2r#6bv-o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
-DEBUG = True
+DEBUG = os.getenv('VERCEL_ENV') != 'production'  # True for development, False in production
 # ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
 ALLOWED_HOSTS = ["*"]
 CSRF_COOKIE_HTTPONLY = True
@@ -228,17 +227,12 @@ LOGGING = {
             'formatter': 'verbose',
         },
     },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
     'loggers': {
-        '': {  # Root logger
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
         'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': False,
-        },
-        'django.request': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
