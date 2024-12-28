@@ -27,8 +27,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-&c0+0gn1+n7^=2t0as2lg)b4akg0ce656&z9-peqo_2r#6bv-o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False if os.getenv("VERCEL_ENV") else True
-
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG = True
 # ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
 ALLOWED_HOSTS = ["*"]
 CSRF_COOKIE_HTTPONLY = True
@@ -127,7 +127,10 @@ if os.getenv("VERCEL_ENV"):
             'USER': os.getenv('POSTGRES_USER'),
             'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
             'HOST': os.getenv('POSTGRES_HOST'),
-            'PORT': '5432',
+            'PORT': os.getenv('POSTGRES_PORT', '5432'),
+            'OPTIONS': {
+                'sslmode': 'require'
+            }
         }
     }
 
@@ -248,5 +251,30 @@ if DEBUG:
     # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+# Add this section for better error reporting
+if not DEBUG:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['console'],
+                'level': 'ERROR',
+            },
+            'django.request': {
+                'handlers': ['console'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+        },
+    }
+
+# Add these settings for static files
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ffjf xejb lmyl xkrc
