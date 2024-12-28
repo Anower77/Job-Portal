@@ -128,7 +128,8 @@ if os.getenv("VERCEL_ENV"):
             'HOST': os.getenv('POSTGRES_HOST'),
             'PORT': os.getenv('POSTGRES_PORT', '5432'),
             'OPTIONS': {
-                'sslmode': 'require'
+                'sslmode': 'require',
+                'connect_timeout': 30,
             }
         }
     }
@@ -217,24 +218,33 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
+            'format': '[{levelname}] {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '[{levelname}] {message}',
             'style': '{',
         },
     },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
+            'formatter': 'simple',
         },
     },
     'root': {
         'handlers': ['console'],
-        'level': 'INFO',
+        'level': 'WARNING',
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'WARNING',
             'propagate': False,
         },
     },
