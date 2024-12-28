@@ -52,23 +52,11 @@ INSTALLED_APPS = [
     'taggit',
     'ckeditor',
     'rest_framework',
-    
+    'django_unused',
     
     # main
     'jobapp.apps.JobappConfig',
     'account.apps.AccountConfig',
-    
-    # 'jobapp.apps.JobappConfig',
-    # 'account.apps.AccountConfig',
-
-    #3rd Party App
-    # 'ckeditor',
-    # 'taggit',
-    # 'tinymce',
-    # 'user_visit',
-    # 'debug_toolbar',
-    # 'ckeditor_uploader',
-    
 ]
 
 AUTH_USER_MODEL = 'account.CustomUser'
