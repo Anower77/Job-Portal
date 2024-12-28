@@ -27,9 +27,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-&c0+0gn1+n7^=2t0as2lg)b4akg0ce656&z9-peqo_2r#6bv-o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False if os.getenv("VERCEL_ENV") else True
 
-ALLOWED_HOSTS = ["127.0.0.1", ".vercel.app"]
+ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
 CSRF_COOKIE_HTTPONLY = True
 
 
@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'taggit',
     'ckeditor',
     'rest_framework',
-    'django_unused',
     
     # main
     'jobapp.apps.JobappConfig',
@@ -118,6 +117,18 @@ DATABASES = {
     }
 }
 
+# Database configuration for Vercel
+if os.getenv("VERCEL_ENV"):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('POSTGRES_DATABASE'),
+            'USER': os.getenv('POSTGRES_USER'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+            'HOST': os.getenv('POSTGRES_HOST'),
+            'PORT': '5432',
+        }
+    }
 
 
 # Password validation
