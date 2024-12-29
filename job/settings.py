@@ -17,24 +17,24 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&c0+0gn1+n7^=2t0as2lg)b4akg0ce656&z9-peqo_2r#6bv-o'
+SECRET_KEY = env('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('VERCEL_ENV') != 'production'  # True for development, False in production
-# ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
-ALLOWED_HOSTS = ["*"]
+DEBUG = True
+ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
 CSRF_COOKIE_HTTPONLY = True
 
 
-# Application definition
 
+# Application definition
 INSTALLED_APPS = [
     
     # pre
@@ -117,22 +117,6 @@ DATABASES = {
     }
 }
 
-# Database configuration for Vercel
-if os.getenv("VERCEL_ENV"):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('POSTGRES_DATABASE'),
-            'USER': os.getenv('POSTGRES_USER'),
-            'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-            'HOST': os.getenv('POSTGRES_HOST'),
-            'PORT': os.getenv('POSTGRES_PORT', '5432'),
-            'OPTIONS': {
-                'sslmode': 'require',
-                'connect_timeout': 30,
-            }
-        }
-    }
 
 
 # Password validation
@@ -170,125 +154,30 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Add these lines if they are not already present
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Static files configuration
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
-]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Media files configuration
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Taggit configuration
-TAGGIT_CASE_INSENSITIVE = True
-
-# Add CKEditor configuration
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'height': 300,
-        'width': '100%',
-    },
-}
-
-CKEDITOR_UPLOAD_PATH = "uploads/"
-
-# Email Configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# Use console backend in production if email settings aren't configured
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_USE_TLS = env('EMAIL_USE_TLS', default=True)
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
-# Make email settings optional in production
-if os.getenv('VERCEL_ENV') == 'production':
-    # Use console backend in production if email settings aren't configured
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
-    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
-    DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@example.com')
-else:
-    # Use the environment variables in development
-    EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-    DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='Job Portal <anowerhossain765562@gmail.com>')
 
-# More detailed logging configuration
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '[{levelname}] {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '[{levelname}] {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'WARNING',
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-            'propagate': False,
-        },
-        'django.db.backends': {
-            'handlers': ['console'],
-            'level': 'WARNING',
-            'propagate': False,
-        },
-    },
-}
-
-# For development/testing, you can use this backend to see emails in console
-if DEBUG:
-    # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-# Add this section for better error reporting
-if not DEBUG:
-    LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-            },
-        },
-        'loggers': {
-            'django': {
-                'handlers': ['console'],
-                'level': 'ERROR',
-            },
-            'django.request': {
-                'handlers': ['console'],
-                'level': 'ERROR',
-                'propagate': False,
-            },
-        },
-    }
 
 # Add these settings for static files
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-# ffjf xejb lmyl xkrc
