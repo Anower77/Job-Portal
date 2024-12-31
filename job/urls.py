@@ -17,6 +17,21 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.core.mail import send_mail
+from django.http import HttpResponse
+
+def test_email(request):
+    try:
+        send_mail(
+            'Test Subject',
+            'Test Message',
+            settings.EMAIL_HOST_USER,
+            [settings.EMAIL_HOST_USER],
+            fail_silently=False,
+        )
+        return HttpResponse('Email sent successfully!')
+    except Exception as e:
+        return HttpResponse(f'Email failed: {str(e)}')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,6 +39,7 @@ urlpatterns = [
     path('', include('account.urls')),
     path('api-auth/', include('rest_framework.urls')),
     path('', include('project_app.urls')),
+    path('test-email/', test_email, name='test-email'),
 ]
 
 # Add static/media serving only for development
