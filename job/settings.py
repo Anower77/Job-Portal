@@ -14,6 +14,7 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,7 +30,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1', '.onrender.com']
 CSRF_COOKIE_HTTPONLY = True
 
 
@@ -106,17 +107,31 @@ AUTH_USER_MODEL = 'account.CustomUser'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': env('DB_NAME'),
+#         'USER': env('DB_USER'),
+#         'PASSWORD': env('DB_PASSWORD'),
+#         'HOST': env('DB_HOST'),
+#         'PORT': env('DB_PORT'),
+#     }
+# }
 
+
+
+DATABASES = {
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL')),
+    # 'default': {
+    #     # database url
+        # 'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': os.getenv('DATABASE_NAME'),
+        # 'USER': os.getenv('DATABASE_USER'),
+        # 'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        # 'HOST': os.getenv('DATABASE_HOST'),
+        # 'PORT': os.getenv('DATABASE_PORT'),
+    
+}
 
 
 # Password validation
