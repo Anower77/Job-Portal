@@ -17,6 +17,7 @@ from django.conf import settings
 from jobapp.forms import *
 from jobapp.models import *
 from jobapp.permission import *
+from account.models import CustomUser
 User = get_user_model()
 
 
@@ -379,28 +380,38 @@ def delete_job(request, id):
         }, status=404)
 
 @login_required
-@user_is_employer
 def send_job_offer(request, job_id, applicant_id):
-    job = get_object_or_404(Job, id=job_id, user=request.user)
-    applicant = get_object_or_404(User, id=applicant_id)
+    if request.method == 'POST':
+        job = get_object_or_404(Job, id=job_id, user=request.user)
+        applicant = get_object_or_404(CustomUser, id=applicant_id)
+        
+        # Here you can add logic to:
+        # 1. Create an offer record in database
+        # 2. Send email notification to applicant
+        # 3. Update application status
+        
+        try:
+            # Send email notification
+            subject = f'Job Offer for {job.title}'
+            message = render_to_string('emails/job_offer.html', {
+                'job': job,
+                'applicant': applicant,
+                'employer': request.user,
+            })
+            
+            email = EmailMessage(
+                subject,
+                message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[applicant.email]
+            )
+            email.content_subtype = "html"
+            email.send()
+            
+            messages.success(request, 'Job offer sent successfully!')
+        except Exception as e:
+            messages.error(request, f'Error sending job offer: {str(e)}')
+        
+        return redirect('applicants', id=job_id)
     
-    # Send offer email
-    mail_subject = f'Job Offer - {job.title}'
-    message = render_to_string('emails/job_offer.html', {
-        'user': applicant,
-        'job': job,
-        'employer': request.user,
-    })
-    
-    email = EmailMessage(
-        subject=mail_subject,
-        body=message,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[applicant.email]
-    )
-    # Set the content type to HTML
-    email.content_subtype = "html"
-    email.send()
-    
-    messages.success(request, f'Job offer sent to {applicant.get_full_name()}')
-    return redirect('jobapp:applicants', id=job_id)
+    return redirect('applicants', id=job_id)
