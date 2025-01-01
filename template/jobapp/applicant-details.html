@@ -1,34 +1,95 @@
 {% extends 'base.html' %}
-{% load static %} 
+{% load static %}
+
 {% block content %}
-
-
-
-    <!-- HOME -->
-    <section class="section-hero overlay inner-page bg-image" id="home-section">
-      <h2 class="text-center">Applicant Details</h2>
-    </section>
-
-    <section class="site-section block__18514" id="next-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8">
-            <span class="text-primary d-block mb-5"><span class="icon-magnet display-1"></span></span>
-            <h2 class="mb-4">{{ applicant.get_full_name }}</h2>
-            <p><h4>Email :</h4>{{ applicant.email }}</p>
-            <p><h4>Gender :</h4>
-                {% if applicant.gender == 'M' %}
-                    Male
-                {% else %}
-                    Female
-                {% endif %}
-            </p>
-            <p><a href="mailto:{{ applicant.email }}" class="btn btn-primary btn-md mt-4">Contact</a></p>
-          </div>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h3>Applicant Profile</h3>
         </div>
-      </div>
-    </section>
-    
+        <div class="card-body">
+            <div class="row">
+                <!-- Profile Picture -->
+                <div class="col-md-3 text-center">
+                    {% if applicant.profile_picture %}
+                        <img src="{{ applicant.profile_picture.url }}" class="img-fluid rounded-circle mb-3" alt="Profile Picture">
+                    {% else %}
+                        <img src="{% static 'images/default-profile.png' %}" class="img-fluid rounded-circle mb-3" alt="Default Profile">
+                    {% endif %}
+                </div>
+                
+                <!-- Basic Information -->
+                <div class="col-md-9">
+                    <h4>{{ applicant.get_full_name }}</h4>
+                    <p><i class="fas fa-envelope"></i> {{ applicant.email }}</p>
+                    {% if applicant.phone_number %}
+                        <p><i class="fas fa-phone"></i> {{ applicant.phone_number }}</p>
+                    {% endif %}
+                    <p><i class="fas fa-map-marker-alt"></i> {{ applicant.city }}, {{ applicant.country }}</p>
+                </div>
+            </div>
 
+            <!-- Professional Links -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h5>Professional Links</h5>
+                    <div class="d-flex flex-wrap">
+                        {% if applicant.linkedin_profile %}
+                            <a href="{{ applicant.linkedin_profile }}" class="btn btn-outline-primary m-1">
+                                <i class="fab fa-linkedin"></i> LinkedIn
+                            </a>
+                        {% endif %}
+                        {% if applicant.github_profile %}
+                            <a href="{{ applicant.github_profile }}" class="btn btn-outline-dark m-1">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                        {% endif %}
+                        {% if applicant.personal_website %}
+                            <a href="{{ applicant.personal_website }}" class="btn btn-outline-info m-1">
+                                <i class="fas fa-globe"></i> Portfolio
+                            </a>
+                        {% endif %}
+                        {% if applicant.cv_link %}
+                            <a href="{{ applicant.cv_link }}" class="btn btn-outline-success m-1">
+                                <i class="fas fa-file-pdf"></i> CV
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
 
+            <!-- Additional Information -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h5>Additional Information</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>Nationality:</strong> {{ applicant.nationality }}</li>
+                        <li><strong>Languages:</strong> {{ applicant.languages }}</li>
+                        <li><strong>Work Eligibility:</strong> 
+                            {% if applicant.work_eligibility %}
+                                <span class="badge bg-success">Eligible</span>
+                            {% else %}
+                                <span class="badge bg-warning">Not Verified</span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Job Offer Section -->
+            {% if user.role == 'employer' %}
+            <div class="row mt-4">
+                <div class="col-12">
+                    <form method="post" action="{% url 'send-job-offer' job.id applicant.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Send Job Offer
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -73,37 +73,16 @@ class UserLoginForm(forms.Form):
         return self.user if hasattr(self, 'user') else None
 
 class EmployeeProfileEditForm(forms.ModelForm):
-    gender = forms.ChoiceField(
-        choices=CustomUser.GENDER_CHOICES,
-        widget=forms.Select(attrs={
-            'class': 'form-control',
-            'placeholder': 'Select Gender'
-        })
+    date_of_birth = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        required=False
     )
     
-    cv_link = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Paste your Google Drive CV link here'
-        })
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(EmployeeProfileEditForm, self).__init__(*args, **kwargs)
-        self.fields['first_name'].widget.attrs.update({'placeholder': 'Enter First Name', 'class': 'form-control'})
-        self.fields['last_name'].widget.attrs.update({'placeholder': 'Enter Last Name', 'class': 'form-control'})
-        self.fields['email'].widget.attrs.update({'placeholder': 'Enter Email', 'class': 'form-control'})
-
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'email', 'gender', 'cv_link']
-        exclude = ['password']
-
-    def clean_cv_link(self):
-        cv_link = self.cleaned_data.get('cv_link')
-        if cv_link:
-            if not (cv_link.startswith('https://drive.google.com') or 
-                   cv_link.startswith('https://docs.google.com')):
-                raise forms.ValidationError("Please enter a valid Google Drive link")
-        return cv_link
+        fields = [
+            'first_name', 'last_name', 'email', 'phone_number',
+            'linkedin_profile', 'personal_website', 'city', 'country',
+            'date_of_birth', 'profile_picture', 'nationality',
+            'work_eligibility', 'languages', 'github_profile', 'cv_link'
+        ]
