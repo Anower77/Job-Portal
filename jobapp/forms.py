@@ -44,20 +44,15 @@ class JobForm(forms.ModelForm):
 
     class Meta:
         model = Job
-        fields = [
-            'title', 
-            'location',
-            'job_type',
-            'category',
-            'salary',
-            'description',
-            'tags',
-            'last_date',
-            'company_name',
-            'company_description',
-            'url'
-        ]
-        exclude = ('user', 'is_published', 'is_closed', 'timestamp')
+        exclude = ['user', 'created_at', 'updated_at', 'is_closed', 'is_published', 'timestamp']
+        labels = {
+            'last_date': 'Application Deadline',
+            'company_name': 'Company Name',
+            'company_description': 'Company Description',
+            'title': 'Job Title',
+            'description': 'Job Description',
+            'salary': 'Salary Range',
+        }
 
     def clean_job_type(self):
         job_type = self.cleaned_data.get('job_type')

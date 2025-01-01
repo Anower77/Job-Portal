@@ -22,26 +22,21 @@ User = get_user_model()
 
 
 def home_view(request):
-
-    published_jobs = Job.objects.filter(is_published=True).order_by('-timestamp')
-    jobs = published_jobs.filter(is_closed=False)
+    published_jobs = Job.objects.filter(is_published=True)
+    active_jobs = published_jobs.filter(is_closed=False).order_by('-timestamp')
     total_candidates = User.objects.filter(role='employee').count()
     total_companies = User.objects.filter(role='employer').count()
-    paginator = Paginator(jobs, 3)
-    page_number = request.GET.get('page',None)
-    page_obj = paginator.get_page(page_number)
+    filled_jobs = published_jobs.filter(is_closed=True).count()
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        job_lists = list(jobs.values())
-        return JsonResponse({
-            'job_lists': job_lists
-        })
+    paginator = Paginator(active_jobs, 3)
+    page_number = request.GET.get('page', None)
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'total_candidates': total_candidates,
         'total_companies': total_companies,
-        'total_jobs': len(jobs),
-        'total_completed_jobs':len(published_jobs.filter(is_closed=True)),
+        'total_jobs': active_jobs.count(),
+        'total_completed_jobs': filled_jobs,
         'page_obj': page_obj
     }
     return render(request, 'jobapp/index.html', context)
