@@ -47,39 +47,36 @@
   <div class="container">
     <div class="row mb-5 justify-content-center">
       <div class="col-md-7 text-center">
-        <h2 class="section-title mb-2 text-white">Active Status</h2>
-        <p class="lead text-white">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita unde officiis
-          recusandae sequi excepturi corrupti.</p>
+        <h2 class="section-title mb-2 text-white">Job Portal Statistics</h2>
       </div>
     </div>
     <div class="row pb-0 block__19738 section-counter">
-
       <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
         <div class="d-flex align-items-center justify-content-center mb-2">
-          <strong class="number" data-number="{{ total_candidates }}">0</strong>
+          <strong class="number">{{ total_candidates }}</strong>
         </div>
-        <span class="caption">Candidates</span>
+        <span class="caption text-white">Active Candidates</span>
       </div>
 
       <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
         <div class="d-flex align-items-center justify-content-center mb-2">
-          <strong class="number" data-number="{{ total_jobs }}">0</strong>
+          <strong class="number">{{ total_jobs }}</strong>
         </div>
-        <span class="caption">Jobs Posted</span>
+        <span class="caption text-white">Active Jobs</span>
       </div>
 
       <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
         <div class="d-flex align-items-center justify-content-center mb-2">
-          <strong class="number" data-number="{{ total_completed_jobs }}">0</strong>
+          <strong class="number">{{ total_completed_jobs }}</strong>
         </div>
-        <span class="caption">Jobs Filled</span>
+        <span class="caption text-white">Jobs Filled</span>
       </div>
 
       <div class="col-6 col-md-6 col-lg-3 mb-5 mb-lg-0">
         <div class="d-flex align-items-center justify-content-center mb-2">
-          <strong class="number" data-number="{{ total_companies }}">0</strong>
+          <strong class="number">{{ total_companies }}</strong>
         </div>
-        <span class="caption">Companies</span>
+        <span class="caption text-white">Companies</span>
       </div>
     </div>
   </div>
@@ -216,33 +213,6 @@
   </div>
 
 </section>
-
-<div class="row">
-    <div class="col-lg-3">
-        <div class="stats-card">
-            <h3>{{ total_candidates }}</h3>
-            <p>Active Candidates</p>
-        </div>
-    </div>
-    <div class="col-lg-3">
-        <div class="stats-card">
-            <h3>{{ total_companies }}</h3>
-            <p>Companies</p>
-        </div>
-    </div>
-    <div class="col-lg-3">
-        <div class="stats-card">
-            <h3>{{ total_jobs }}</h3>
-            <p>Active Jobs</p>
-        </div>
-    </div>
-    <div class="col-lg-3">
-        <div class="stats-card">
-            <h3>{{ total_completed_jobs }}</h3>
-            <p>Jobs Filled</p>
-        </div>
-    </div>
-</div>
 
 {% endblock %}
 {% block extra_scripts %}
