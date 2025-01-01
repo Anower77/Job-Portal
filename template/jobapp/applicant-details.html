@@ -80,7 +80,7 @@
             {% if user.role == 'employer' %}
             <div class="row mt-4">
                 <div class="col-12">
-                    <form method="post" action="{% url 'send-job-offer' job_id=job.id applicant_id=applicant.id %}">
+                    <form method="post" action="{% url 'jobapp:send-job-offer' job_id=job.id applicant_id=applicant.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-paper-plane"></i> Send Job Offer
