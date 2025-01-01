@@ -387,11 +387,6 @@ def send_job_offer(request, job_id, applicant_id):
         job = get_object_or_404(Job, id=job_id, user=request.user)
         applicant = get_object_or_404(CustomUser, id=applicant_id)
         
-        # Here you can add logic to:
-        # 1. Create an offer record in database
-        # 2. Send email notification to applicant
-        # 3. Update application status
-        
         try:
             # Send email notification
             subject = f'Job Offer for {job.title}'
@@ -414,6 +409,6 @@ def send_job_offer(request, job_id, applicant_id):
         except Exception as e:
             messages.error(request, f'Error sending job offer: {str(e)}')
         
-        return redirect('applicants', id=job_id)
+        return redirect('jobapp:applicants', id=job_id)
     
-    return redirect('applicants', id=job_id)
+    return redirect('jobapp:applicants', id=job_id)
