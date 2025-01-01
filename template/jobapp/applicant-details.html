@@ -77,7 +77,7 @@
             </div>
 
             <!-- Job Offer Section -->
-            {% if user.role == 'employer' %}
+            {% if user.role == 'employer' and job %}
             <div class="row mt-4">
                 <div class="col-12">
                     <form method="post" action="{% url 'jobapp:send-job-offer' job_id=job.id applicant_id=applicant.id %}">

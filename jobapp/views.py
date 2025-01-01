@@ -307,11 +307,18 @@ def delete_bookmark_view(request, id):
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def applicant_details_view(request, id):
-
     applicant = get_object_or_404(User, id=id)
+    
+    # Get the job ID from query parameters
+    job_id = request.GET.get('job_id')
+    job = None
+    if job_id:
+        job = get_object_or_404(Job, id=job_id, user=request.user)
 
-    context = {'applicant': applicant}
-
+    context = {
+        'applicant': applicant,
+        'job': job
+    }
     return render(request, 'jobapp/applicant-details.html', context)
 
 
