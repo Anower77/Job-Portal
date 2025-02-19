@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.core.mail import send_mail
 from django.http import HttpResponse
+from django.views.static import serve
 
 def test_email(request):
     try:
@@ -33,6 +34,9 @@ def test_email(request):
     except Exception as e:
         return HttpResponse(f'Email failed: {str(e)}')
 
+def health_check(request):
+    return HttpResponse("OK")
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('jobapp.urls')),
@@ -40,9 +44,15 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('', include('project_app.urls')),
     path('test-email/', test_email, name='test-email'),
+    path('health/', health_check, name='health_check'),
 ]
 
-# Add static/media serving only for development
+# Serve static and media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    urlpatterns += [
+        path('static/<path:path>', serve, {'document_root': settings.STATIC_ROOT}),
+        path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]

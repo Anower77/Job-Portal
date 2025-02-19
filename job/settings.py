@@ -35,13 +35,20 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1', 
+    '.onrender.com',
+    'job-portal-4uvu.onrender.com'
+]
 
 CSRF_COOKIE_HTTPONLY = True
 CSRF_TRUSTED_ORIGINS = [
     'https://job-portal-4uvu.onrender.com',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
+    'https://localhost:8000',
+    'https://127.0.0.1:8000',
 ]
 
 
@@ -190,14 +197,11 @@ DEFAULT_FROM_EMAIL = env('EMAIL_HOST_USER')
 
 
 # Add these settings for static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Add security settings
-SECURE_SSL_REDIRECT = not DEBUG
-SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = False  # Change this to False temporarily for debugging
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Add CORS settings if needed
 CORS_ALLOWED_ORIGINS = [
@@ -212,3 +216,6 @@ CKEDITOR_5_CONFIGS = {
                    'bulletedList', 'numberedList', 'blockQuote'],
     }
 }
+
+# Add these settings
+USE_X_FORWARDED_HOST = True
