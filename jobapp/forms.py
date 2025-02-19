@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from django.contrib import auth
+from django.core.validators import RegexValidator, URLValidator
+from django.utils import timezone
 
 from jobapp.models import *
 from ckeditor.widgets import CKEditorWidget
@@ -95,7 +97,22 @@ class JobBookmarkForm(forms.ModelForm):
 class JobEditForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
-        forms.ModelForm.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+        # Add field validations
+        self.fields['salary'].validators.append(
+            RegexValidator(
+                r'^\$?\d+(?:,\d{3})*(?:\s*-\s*\$?\d+(?:,\d{3})*)?$',
+                'Enter a valid salary range (e.g. $800 - $1200)'
+            )
+        )
+        self.fields['url'].validators.append(URLValidator())
+        
+        # Add required fields
+        self.fields['title'].required = True
+        self.fields['location'].required = True
+        self.fields['job_type'].required = True
+        self.fields['category'].required = True
+        
         self.fields['title'].label = "Job Title :"
         self.fields['location'].label = "Job Location :"
         self.fields['salary'].label = "Salary :"
@@ -146,6 +163,14 @@ class JobEditForm(forms.ModelForm):
             raise forms.ValidationError("Category is required")
         return category
 
+    def clean(self):
+        cleaned_data = super().clean()
+        last_date = cleaned_data.get('last_date')
+        
+        if last_date and last_date < timezone.now().date():
+            raise forms.ValidationError("Deadline cannot be in the past")
+            
+        return cleaned_data
 
     def save(self, commit=True):
         job = super(JobEditForm, self).save(commit=False)      

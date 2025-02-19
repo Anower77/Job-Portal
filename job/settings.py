@@ -11,26 +11,32 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 import environ
-env = environ.Env()
-environ.Env.read_env()
-from pathlib import Path
 import dj_database_url
+from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Initialize environ
+env = environ.Env(
+    # Set cast defaults
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, ['localhost', '127.0.0.1', '.onrender.com']),
+    EMAIL_PORT=(int, 587),
+    EMAIL_USE_TLS=(bool, True),
+)
+
+# Set the project base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com', 'job-portal-4uvu.onrender.com']
+DEBUG = env('DEBUG')
+
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
+
 CSRF_COOKIE_HTTPONLY = True
 CSRF_TRUSTED_ORIGINS = [
     'https://job-portal-4uvu.onrender.com',
@@ -56,7 +62,7 @@ INSTALLED_APPS = [
     
     # 3rd Party App
     'taggit',
-    'ckeditor',
+    'django_ckeditor_5',
     'rest_framework',
     
     # main
@@ -85,8 +91,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'job.urls'
-AUTH_USER_MODEL = 'account.CustomUser'
-
 
 
 TEMPLATES = [
@@ -106,36 +110,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'job.wsgi.app'
-AUTH_USER_MODEL = 'account.CustomUser'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': env('DB_NAME'),
-#         'USER': env('DB_USER'),
-#         'PASSWORD': env('DB_PASSWORD'),
-#         'HOST': env('DB_HOST'),
-#         'PORT': env('DB_PORT'),
-#     }
-# }
-
-
-
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL')),
-    # 'default': {
-    #     # database url
-        # 'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': os.getenv('DATABASE_NAME'),
-        # 'USER': os.getenv('DATABASE_USER'),
-        # 'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        # 'HOST': os.getenv('DATABASE_HOST'),
-        # 'PORT': os.getenv('DATABASE_PORT'),
-    
+    'default': dj_database_url.config(
+        default=env('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
@@ -196,8 +181,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = env('EMAIL_HOST_USER')
@@ -205,4 +190,25 @@ DEFAULT_FROM_EMAIL = env('EMAIL_HOST_USER')
 
 
 # Add these settings for static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+# Add security settings
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Add CORS settings if needed
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+# CKEditor 5 settings
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
+                   'bulletedList', 'numberedList', 'blockQuote'],
+    }
+}

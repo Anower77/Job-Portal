@@ -11,7 +11,8 @@ class CustomUser(AbstractUser):
     
     ROLE_CHOICES = [
         ('employer', 'Employer'),
-        ('employee', 'Job Seeker')
+        ('employee', 'Job Seeker'),
+        ('admin', 'Administrator')
     ]
 
     username = None
