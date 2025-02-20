@@ -45,6 +45,7 @@ urlpatterns = [
     path('', include('project_app.urls')),
     path('test-email/', test_email, name='test-email'),
     path('health/', health_check, name='health_check'),
+    path('ckeditor5/', include('django_ckeditor_5.urls')),
 ]
 
 # Serve static and media files in development

@@ -1,0 +1,15 @@
+{% load static %}
+<div class="django-ckeditor-5">
+    <div id="{{ widget.attrs.id }}" 
+         data-config="{{ widget.config }}"
+         data-field-id="{{ widget.attrs.id }}"
+         class="{{ widget.attrs.class }} django-ckeditor-5-widget">
+        {{ widget.value|safe }}
+    </div>
+    <textarea name="{{ widget.name }}" 
+              class="django-ckeditor-5-textarea" 
+              style="display: none;" 
+              id="{{ widget.attrs.id }}_textarea">
+        {{ widget.value|safe }}
+    </textarea>
+</div> 

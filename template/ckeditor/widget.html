@@ -1,0 +1,8 @@
+{% load static %}
+<div class="django-ckeditor-5">
+    <div id="{{ id }}" data-config="{{ config }}">
+        {{ value|safe }}
+    </div>
+    <textarea name="{{ name }}" style="display: none;">{{ value }}</textarea>
+</div>
+<script src="{% static 'django_ckeditor_5/dist/bundle.js' %}"></script> 

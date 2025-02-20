@@ -55,27 +55,22 @@ def job_list_View(request):
 @login_required(login_url=reverse_lazy('account:login'))
 @user_is_employer
 def create_job_View(request):
-    form = JobForm(request.POST or None)
-
-    user = get_object_or_404(User, id=request.user.id)
-    categories = Category.objects.all()
-
     if request.method == 'POST':
-
+        form = JobForm(request.POST)
         if form.is_valid():
-
-            instance = form.save(commit=False)
-            instance.user = user
-            instance.save()
-            # for save tags
-            form.save_m2m()
-            messages.success(
-                    request, 'You are successfully posted your job! Please wait for review.')
-            return redirect(reverse("jobapp:single-job", kwargs={'id': instance.id}))
-
+            job = form.save(commit=False)
+            job.user = request.user
+            job.save()
+            # Save tags
+            form.save_m2m()  # This is needed for TaggableManager
+            messages.success(request, 'Job Posted Successfully')
+            return redirect('jobapp:job-list')
+    else:
+        form = JobForm()
+    
     context = {
         'form': form,
-        'categories': categories
+        'title': 'Post New Job'
     }
     return render(request, 'jobapp/post-job.html', context)
 
@@ -389,23 +384,35 @@ def send_job_offer(request, job_id, applicant_id):
         
         try:
             # Send email notification
-            subject = f'Job Offer for {job.title}'
-            message = render_to_string('emails/job_offer.html', {
+            subject = f'Job Offer: {job.title} at {job.company_name}'
+            
+            # Render email template with context
+            html_message = render_to_string('emails/job_offer.html', {
                 'job': job,
                 'applicant': applicant,
                 'employer': request.user,
             })
             
+            # Create email message
             email = EmailMessage(
-                subject,
-                message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                to=[applicant.email]
+                subject=subject,
+                body=html_message,
+                from_email=f"{job.company_name} <{settings.DEFAULT_FROM_EMAIL}>",
+                to=[applicant.email],
+                reply_to=[request.user.email],
+                headers={'X-Entity-Ref-ID': str(job.id)}
             )
+            
             email.content_subtype = "html"
-            email.send()
+            email.send(fail_silently=False)
+            
+            # Update application status
+            application = Applicant.objects.get(job=job, user=applicant)
+            application.status = 'accepted'
+            application.save()
             
             messages.success(request, 'Job offer sent successfully!')
+            
         except Exception as e:
             messages.error(request, f'Error sending job offer: {str(e)}')
         

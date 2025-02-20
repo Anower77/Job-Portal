@@ -325,3 +325,16 @@ def test_email_config(request):
             <p>Error: {str(e)}</p>
             <p>Check the debug.log file for more details.</p>
         """)
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = EmployeeProfileEditForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('account:edit-profile', id=request.user.id)
+    else:
+        form = EmployeeProfileEditForm(instance=request.user)
+    
+    return render(request, 'account/employee-edit-profile.html', {'form': form})

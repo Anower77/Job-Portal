@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from ckeditor.fields import RichTextField
+from django_ckeditor_5.fields import CKEditor5Field
 from taggit.managers import TaggableManager
 
 User = get_user_model()
@@ -21,14 +21,14 @@ class Category(models.Model):
 class Job(models.Model):
     user = models.ForeignKey(User, related_name='User', on_delete=models.CASCADE)
     title = models.CharField(max_length=300)
-    description = RichTextField()
+    description = CKEditor5Field('Description', config_name='default')
     tags = TaggableManager()
     location = models.CharField(max_length=300)
     job_type = models.CharField(choices=JOB_TYPE, max_length=1)
     category = models.ForeignKey(Category, related_name='Category', on_delete=models.CASCADE)
     salary = models.CharField(max_length=30, blank=True)
     company_name = models.CharField(max_length=300)
-    company_description = RichTextField(blank=True, null=True)
+    company_description = CKEditor5Field('Company Description', config_name='default', blank=True, null=True)
     url = models.URLField(max_length=200)
     last_date = models.DateField()
     is_published = models.BooleanField(default=False)

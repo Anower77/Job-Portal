@@ -6,12 +6,27 @@ from django.core.validators import RegexValidator, URLValidator
 from django.utils import timezone
 
 from jobapp.models import *
-from ckeditor.widgets import CKEditorWidget
+from django_ckeditor_5.widgets import CKEditor5Widget
 
 
     
 
 class JobForm(forms.ModelForm):
+    description = forms.CharField(
+        widget=CKEditor5Widget(
+            attrs={'class': 'django-ckeditor-5'},
+            config_name='default'
+        )
+    )
+    
+    company_description = forms.CharField(
+        widget=CKEditor5Widget(
+            attrs={'class': 'django-ckeditor-5'},
+            config_name='default'
+        ),
+        required=False
+    )
+    
     job_type = forms.ChoiceField(
         choices=JOB_TYPE,
         widget=forms.Select(attrs={

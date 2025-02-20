@@ -73,16 +73,31 @@ class UserLoginForm(forms.Form):
         return self.user if hasattr(self, 'user') else None
 
 class EmployeeProfileEditForm(forms.ModelForm):
-    date_of_birth = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date'}),
-        required=False
-    )
-    
     class Meta:
         model = CustomUser
-        fields = [
-            'first_name', 'last_name', 'email', 'phone_number',
-            'linkedin_profile', 'personal_website', 'city', 'country',
-            'date_of_birth', 'profile_picture', 'nationality',
-            'work_eligibility', 'languages', 'github_profile', 'cv_link'
-        ]
+        fields = ['first_name', 'last_name', 'email', 'gender', 'profile_picture', 'cv']
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your first name'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your last name'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your email address'
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'profile_picture': forms.FileInput(attrs={
+                'class': 'custom-file-input',
+                'accept': 'image/*'
+            }),
+            'cv': forms.FileInput(attrs={
+                'class': 'custom-file-input',
+                'accept': '.pdf,.doc,.docx'
+            })
+        }

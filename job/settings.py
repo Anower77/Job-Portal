@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     # main
     'jobapp.apps.JobappConfig',
     'account.apps.AccountConfig',
+    'ckeditor',
 ]
 
 AUTH_USER_MODEL = 'account.CustomUser'
@@ -103,7 +104,10 @@ ROOT_URLCONF = 'job.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'template')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'template'),
+            os.path.join(BASE_DIR, 'template/django_ckeditor_5'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,6 +131,8 @@ DATABASES = {
         default=env('DATABASE_URL'),
         conn_max_age=600,
         conn_health_checks=True,
+        ssl_require=True,
+        engine='django.db.backends.postgresql'
     )
 }
 
@@ -169,7 +175,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'django_ckeditor_5/static'),
 ]
 
 # Media files configuration
@@ -212,10 +219,19 @@ CORS_ALLOWED_ORIGINS = [
 # CKEditor 5 settings
 CKEDITOR_5_CONFIGS = {
     'default': {
-        'toolbar': ['heading', '|', 'bold', 'italic', 'link',
-                   'bulletedList', 'numberedList', 'blockQuote'],
+        'toolbar': [
+            'heading', '|',
+            'bold', 'italic', 'link',
+            'bulletedList', 'numberedList',
+            'blockQuote', 'imageUpload'
+        ],
+        'height': '300px',
+        'width': '100%',
     }
 }
+
+CKEDITOR_5_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+CKEDITOR_5_UPLOAD_PATH = "uploads/"
 
 # Add these settings
 USE_X_FORWARDED_HOST = True
