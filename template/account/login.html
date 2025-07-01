@@ -40,6 +40,10 @@
         </div>
         {% endfor %}
         {% endif %}
+        <div class="mb-4 text-center">
+          <button type="button" class="btn btn-outline-primary mx-2" onclick="fillDemo('employee')">Demo Employee</button>
+          <button type="button" class="btn btn-outline-success mx-2" onclick="fillDemo('employer')">Demo Employer</button>
+        </div>
         <form method="POST" action="#" class="p-4 border rounded">
           {% csrf_token %}
           {% for field in form %}
@@ -66,4 +70,17 @@
 </section>
 
 
+{% endblock %}
+{% block extra_scripts %}
+<script>
+function fillDemo(type) {
+  if(type === 'employee') {
+    document.getElementById('id_email').value = 'employee@gmail.com';
+    document.getElementById('id_password').value = 'Employee@@50000';
+  } else if(type === 'employer') {
+    document.getElementById('id_email').value = 'employer@gmail.com';
+    document.getElementById('id_password').value = 'Employer@@50000';
+  }
+}
+</script>
 {% endblock %}

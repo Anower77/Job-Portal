@@ -37,14 +37,25 @@
                         {{ applicant.get_total_applicant }}
 
                                 <tr>
-                                    <td class="text-center"><a href="">{{ applicant.user.get_full_name }}</a></td     >
+                                    <td class="text-center"><a href="">{{ applicant.user.get_full_name }}</a></td>
                                     <td>{{ applicant.job.title }}</td>
                                     <td>{{ applicant.timestamp }}</td>
                                     <td>
                                         <a href="{% url 'jobapp:applicant-details' applicant.user.id %}" class="btn btn-info btn-sm">View Profile</a>
                                         <a href="{% url 'jobapp:send-job-offer' applicant.job.id applicant.user.id %}" class="btn btn-success btn-sm">Send Offer</a>
+                                        <span class="badge 
+                                            {% if applicant.status == 'pending' %}badge-warning
+                                            {% elif applicant.status == 'accepted' %}badge-success
+                                            {% elif applicant.status == 'rejected' %}badge-danger
+                                            {% endif %}">
+                                            {{ applicant.get_status_display }}
+                                        </span>
+                                        <form method="post" action="{% url 'jobapp:update-applicant-status' applicant.id %}" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button name="status" value="accepted" class="btn btn-outline-success btn-sm" {% if applicant.status == 'accepted' %}disabled{% endif %}>Accept</button>
+                                            <button name="status" value="rejected" class="btn btn-outline-danger btn-sm" {% if applicant.status == 'rejected' %}disabled{% endif %}>Reject</button>
+                                        </form>
                                     </td>
-
                                 </tr>
                                 {% endfor %}
                             </tbody>

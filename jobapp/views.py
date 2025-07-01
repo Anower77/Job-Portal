@@ -9,7 +9,7 @@ from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.core.serializers import serialize
 from django.views.decorators.cache import cache_page
 from django.core.cache import cache
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_POST
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -205,16 +205,27 @@ def dashboard_view(request):
         for job in jobs:
             count = Applicant.objects.filter(job=job.id).count()
             total_applicants[job.id] = count
+        # Applicant status tracking for employer
+        all_applicants = Applicant.objects.filter(job__in=jobs)
+        total_applicants_count = all_applicants.count()
+        pending_count = all_applicants.filter(status='pending').count()
+        accepted_count = all_applicants.filter(status='accepted').count()
+        rejected_count = all_applicants.filter(status='rejected').count()
+    else:
+        total_applicants_count = pending_count = accepted_count = rejected_count = 0
 
     if request.user.role == 'employee':
         savedjobs = BookmarkJob.objects.filter(user=request.user.id)
         appliedjobs = Applicant.objects.filter(user=request.user.id)
     context = {
-
         'jobs': jobs,
         'savedjobs': savedjobs,
         'appliedjobs':appliedjobs,
-        'total_applicants': total_applicants
+        'total_applicants': total_applicants,
+        'total_applicants_count': total_applicants_count,
+        'pending_count': pending_count,
+        'accepted_count': accepted_count,
+        'rejected_count': rejected_count,
     }
 
     return render(request, 'jobapp/dashboard.html', context)
@@ -419,3 +430,17 @@ def send_job_offer(request, job_id, applicant_id):
         return redirect('jobapp:applicants', id=job_id)
     
     return redirect('jobapp:applicants', id=job_id)
+
+@require_POST
+@login_required(login_url=reverse_lazy('account:login'))
+@user_is_employer
+def update_applicant_status_view(request, id):
+    applicant = get_object_or_404(Applicant, id=id, job__user=request.user)
+    status = request.POST.get('status')
+    if status in ['accepted', 'rejected']:
+        applicant.status = status
+        applicant.save()
+        messages.success(request, f"Applicant status updated to {status}.")
+    else:
+        messages.error(request, "Invalid status.")
+    return redirect('jobapp:applicants', id=applicant.job.id)

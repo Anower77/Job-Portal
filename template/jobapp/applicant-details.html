@@ -2,94 +2,99 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-header">
-            <h3>Applicant Profile</h3>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <!-- Profile Picture -->
-                <div class="col-md-3 text-center">
-                    {% if applicant.profile_picture %}
-                        <img src="{{ applicant.profile_picture.url }}" class="img-fluid rounded-circle mb-3" alt="Profile Picture">
-                    {% else %}
-                        <img src="{% static 'images/default-profile.png' %}" class="img-fluid rounded-circle mb-3" alt="Default Profile">
-                    {% endif %}
-                </div>
-                
-                <!-- Basic Information -->
-                <div class="col-md-9">
-                    <h4>{{ applicant.get_full_name }}</h4>
-                    <p><i class="fas fa-envelope"></i> {{ applicant.email }}</p>
-                    {% if applicant.phone_number %}
-                        <p><i class="fas fa-phone"></i> {{ applicant.phone_number }}</p>
-                    {% endif %}
-                    <p><i class="fas fa-map-marker-alt"></i> {{ applicant.city }}, {{ applicant.country }}</p>
-                </div>
-            </div>
+<section class="section-hero overlay inner-page" id="home-section">
+    <!-- <h1 class="text-center font-weight-bold">Applicant Details</h1> -->
+</section>
 
-            <!-- Professional Links -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <h5>Professional Links</h5>
-                    <div class="d-flex flex-wrap">
-                        {% if applicant.linkedin_profile %}
-                            <a href="{{ applicant.linkedin_profile }}" class="btn btn-outline-primary m-1">
-                                <i class="fab fa-linkedin"></i> LinkedIn
-                            </a>
-                        {% endif %}
-                        {% if applicant.github_profile %}
-                            <a href="{{ applicant.github_profile }}" class="btn btn-outline-dark m-1">
-                                <i class="fab fa-github"></i> GitHub
-                            </a>
-                        {% endif %}
-                        {% if applicant.personal_website %}
-                            <a href="{{ applicant.personal_website }}" class="btn btn-outline-info m-1">
-                                <i class="fas fa-globe"></i> Portfolio
-                            </a>
-                        {% endif %}
-                        {% if applicant.cv_link %}
-                            <a href="{{ applicant.cv_link }}" class="btn btn-outline-success m-1">
-                                <i class="fas fa-file-pdf"></i> CV
-                            </a>
-                        {% endif %}
+<section class="site-section">
+<div class="container mt-5 p-5">
+    <div class="row justify-content-center p-5">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-black text-center py-4 rounded-top">
+                    <div class="flex flex-col items-center">
+                        <div class="mb-2">
+                            {% if applicant.profile_picture %}
+                                <img src="{{ applicant.profile_picture.url }}" class="img-fluid rounded-circle border border-white shadow" style="width: 100px; height: 100px; object-fit: cover; background: #fff;" alt="Profile Picture">
+                            {% else %}
+                                <img src="{% static 'images/default-profile.png' %}" class="img-fluid rounded-circle border border-white shadow" style="width: 100px; height: 100px; object-fit: cover; background: #fff;" alt="Default Profile">
+                            {% endif %}
+                        </div>
+                        <h2 class="mb-0 font-weight-bold"><i class="fas fa-user-circle mr-2"></i>Applicant Profile</h2>
+                        <p class="mb-0 text-light small">Detailed information about the applicant</p>
                     </div>
                 </div>
-            </div>
-
-            <!-- Additional Information -->
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <h5>Additional Information</h5>
-                    <ul class="list-unstyled">
-                        <li><strong>Nationality:</strong> {{ applicant.nationality }}</li>
-                        <li><strong>Languages:</strong> {{ applicant.languages }}</li>
-                        <li><strong>Work Eligibility:</strong> 
-                            {% if applicant.work_eligibility %}
-                                <span class="badge bg-success">Eligible</span>
-                            {% else %}
-                                <span class="badge bg-warning">Not Verified</span>
+                <div class="card-body p-5">
+                    <div class="row align-items-center mb-4">
+                        <!-- Basic Information -->
+                        <div class="col-md-8">
+                            <h3 class="font-weight-bold mb-1">{{ applicant.get_full_name }}</h3>
+                            <p class="mb-1"><i class="fas fa-envelope text-primary"></i> <span class="ml-1">{{ applicant.email }}</span></p>
+                            {% if applicant.phone_number %}
+                                <p class="mb-1"><i class="fas fa-phone text-primary"></i> <span class="ml-1">{{ applicant.phone_number }}</span></p>
                             {% endif %}
-                        </li>
-                    </ul>
-                </div>
-            </div>
+                            <p class="mb-1"><i class="fas fa-map-marker-alt text-primary"></i> <span class="ml-1">{{ applicant.city }}, {{ applicant.country }}</span></p>
+                        </div>
+                    </div>
 
-            <!-- Job Offer Section -->
-            {% if user.role == 'employer' and job %}
-            <div class="row mt-4">
-                <div class="col-12">
-                    <form method="post" action="{% url 'jobapp:send-job-offer' job_id=job.id applicant_id=applicant.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> Send Job Offer
-                        </button>
-                    </form>
+                    <!-- Professional Links -->
+                    <div class="bg-light rounded p-3 mb-4">
+                        <h5 class="text-secondary mb-3"><i class="fas fa-briefcase mr-2"></i>Professional Links</h5>
+                        <div class="d-flex flex-wrap">
+                            {% if applicant.linkedin_profile %}
+                                <a href="{{ applicant.linkedin_profile }}" class="btn btn-outline-primary m-1" target="_blank">
+                                    <i class="fab fa-linkedin"></i> LinkedIn
+                                </a>
+                            {% endif %}
+                            {% if applicant.github_profile %}
+                                <a href="{{ applicant.github_profile }}" class="btn btn-outline-dark m-1" target="_blank">
+                                    <i class="fab fa-github"></i> GitHub
+                                </a>
+                            {% endif %}
+                            {% if applicant.personal_website %}
+                                <a href="{{ applicant.personal_website }}" class="btn btn-outline-info m-1" target="_blank">
+                                    <i class="fas fa-globe"></i> Portfolio
+                                </a>
+                            {% endif %}
+                            {% if applicant.cv %}
+                                <a href="{{ applicant.cv.url }}" class="btn btn-outline-success m-1" target="_blank">
+                                    <i class="fas fa-file-pdf"></i> CV
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="bg-white border rounded p-3 mb-4">
+                        <h5 class="text-secondary mb-3"><i class="fas fa-info-circle mr-2"></i>Additional Information</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><strong>Nationality:</strong> {{ applicant.nationality }}</li>
+                            <li class="mb-2"><strong>Languages:</strong> {{ applicant.languages }}</li>
+                            <li class="mb-2"><strong>Work Eligibility:</strong> 
+                                {% if applicant.work_eligibility %}
+                                    <span class="badge badge-success">Eligible</span>
+                                {% else %}
+                                    <span class="badge badge-warning">Not Verified</span>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Job Offer Section -->
+                    {% if user.role == 'employer' and job %}
+                    <div class="text-center mt-4">
+                        <form method="post" action="{% url 'jobapp:send-job-offer' job_id=job.id applicant_id=applicant.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-lg btn-primary px-5 shadow">
+                                <i class="fas fa-paper-plane"></i> Send Job Offer
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
-            {% endif %}
         </div>
     </div>
 </div>
+</section>
 {% endblock %}

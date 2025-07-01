@@ -25,6 +25,9 @@
         <h2 class="mb-4 text-center">Sign Up To JobBoard</h2>
         {% include 'messages.html' %}
 
+        <div class="mb-4 text-center">
+          <button type="button" class="btn btn-outline-primary mx-2" onclick="fillDemoEmployee()">Demo Employee Registration</button>
+        </div>
 
         {% if form.errors %}
         {% for field in form %}
@@ -80,4 +83,19 @@
   </div>
 </section>
 
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function fillDemoEmployee() {
+  document.getElementById('id_first_name').value = 'Demo';
+  document.getElementById('id_last_name').value = 'Employee';
+  document.getElementById('id_email').value = 'employee@gmail.com';
+  document.getElementById('id_password1').value = 'Employee@@50000';
+  document.getElementById('id_password2').value = 'Employee@@50000';
+  if(document.getElementById('id_gender')) {
+    document.getElementById('id_gender').value = 'male';
+  }
+}
+</script>
 {% endblock %}

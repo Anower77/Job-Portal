@@ -4,20 +4,71 @@
 <head>
     <title>Account Activation</title>
 </head>
-<body>
-    <h2>Hi {{ user.first_name }},</h2>
-    
-    <p>Please click on the link below to confirm your registration:</p>
-    
-    <p>
-        <a href="http://{{ domain }}{% url 'account:activate' uidb64=uid token=token %}">
-            Activate Account
-        </a>
-    </p>
-    
-    <p>If you did not make this request, you can safely ignore this email.</p>
-    
-    <p>Best regards,<br>Job Portal Team</p>
+<body class="bg-gray-100 min-h-screen">
+    <header class="px-6 py-4 bg-white shadow">
+        <h1 class="text-2xl font-bold">My Profile & Settings</h1>
+    </header>
+    <main class="max-w-5xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+        <!-- Sidebar -->
+        <aside class="md:col-span-1 bg-white rounded-lg shadow p-6">
+            <nav class="space-y-4">
+                <a href="#" class="block font-bold text-blue-600">Profile</a>
+                <a href="#" class="block text-gray-700">Account</a>
+                <a href="#" class="block text-gray-700">Password</a>
+                <a href="#" class="block text-gray-700">Billing</a>
+            </nav>
+        </aside>
+        <!-- Main Panel -->
+        <section class="md:col-span-3 bg-white rounded-lg shadow p-6">
+            <h2 class="text-xl font-bold mb-4">Profile</h2>
+            <form class="space-y-6">
+                <div class="flex items-center space-x-4">
+                    <img src="/static/images/avatar.png" class="h-16 w-16 rounded-full border-2 border-blue-500" alt="Avatar">
+                    <input type="file" class="block">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">Name</label>
+                    <input type="text" class="w-full px-4 py-2 border rounded">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">Email</label>
+                    <input type="email" class="w-full px-4 py-2 border rounded">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">Company Name</label>
+                    <input type="text" class="w-full px-4 py-2 border rounded">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">Phone</label>
+                    <input type="text" class="w-full px-4 py-2 border rounded">
+                </div>
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700">Save</button>
+            </form>
+            <hr class="my-8">
+            <h2 class="text-xl font-bold mb-4">Change Password</h2>
+            <form class="space-y-4">
+                <div>
+                    <label class="block font-bold mb-1">Current Password</label>
+                    <input type="password" class="w-full px-4 py-2 border rounded">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">New Password</label>
+                    <input type="password" class="w-full px-4 py-2 border rounded">
+                </div>
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700">Change Password</button>
+            </form>
+            <hr class="my-8">
+            <h2 class="text-xl font-bold mb-4">Billing</h2>
+            <div class="bg-gray-100 rounded p-4 flex items-center space-x-4">
+                <div class="w-12 h-8 bg-gray-300 rounded"></div>
+                <div>
+                    <div class="font-bold">Visa **** 1234</div>
+                    <div class="text-gray-500 text-sm">Exp: 12/25</div>
+                </div>
+                <button class="ml-auto bg-red-500 text-white px-4 py-1 rounded">Remove</button>
+            </div>
+        </section>
+    </main>
 </body>
 </html>
 {% endautoescape %} 

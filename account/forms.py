@@ -75,7 +75,11 @@ class UserLoginForm(forms.Form):
 class EmployeeProfileEditForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'email', 'gender', 'profile_picture', 'cv']
+        fields = [
+            'first_name', 'last_name', 'email', 'gender', 'profile_picture', 'cv',
+            'phone_number', 'linkedin_profile', 'github_profile', 'personal_website',
+            'city', 'country', 'date_of_birth', 'nationality', 'work_eligibility', 'languages'
+        ]
         widgets = {
             'first_name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -99,5 +103,45 @@ class EmployeeProfileEditForm(forms.ModelForm):
             'cv': forms.FileInput(attrs={
                 'class': 'custom-file-input',
                 'accept': '.pdf,.doc,.docx'
-            })
+            }),
+            'phone_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your phone number'
+            }),
+            'linkedin_profile': forms.URLInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'LinkedIn profile URL'
+            }),
+            'github_profile': forms.URLInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'GitHub profile URL'
+            }),
+            'personal_website': forms.URLInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Personal website URL'
+            }),
+            'city': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'City'
+            }),
+            'country': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Country'
+            }),
+            'date_of_birth': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date',
+                'placeholder': 'Date of Birth'
+            }),
+            'nationality': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nationality'
+            }),
+            'work_eligibility': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+            'languages': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Languages (comma separated)'
+            }),
         }
