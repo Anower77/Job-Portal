@@ -2,8 +2,8 @@ Sure! Here is a basic structure for a `README.md` file for your "Job-Portal" rep
 
 # Job-Portal
 
-A job portal application designed to help users find job listings and apply for positions. This project utilizes a mix of HTML, CSS, SCSS, JavaScript, and Python.
-]
+A job portal application designed to help users find job listings and apply for positions. 
+
 ## Features
 
 - Browse job listings
