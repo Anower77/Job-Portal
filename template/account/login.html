@@ -2,85 +2,304 @@
 {% load static %}
 {% block content %}
 
-<!-- HOME -->
+<!-- Enhanced Hero Section -->
 <section class="section-hero overlay inner-page bg-image" id="home-section">
   <div class="container">
     <div class="row">
       <div class="col-md-7">
-        <h1 class="text-white font-weight-bold">Log In</h1>
-        <!-- <div class="custom-breadcrumbs">
-          <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
-          <span class="text-white"><strong>Log In</strong></span>
-        </div> -->
+        <h1 class="text-white font-weight-bold">Welcome Back</h1>
+        <p class="text-white-50">Sign in to access your account and continue your job search journey</p>
       </div>
     </div>
   </div>
 </section>
-<section class="site-section">
+
+<section class="site-section py-5">
   <div class="container">
-    <div class="row">
-
-      <div class="col-lg-12 mb-5">
-
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
         {% include 'messages.html' %}
 
-        {% if form.errors %}
-        {% for field in form %}
-        {% for error in field.errors %}
-        <div class="alert alert-danger alert-dismissable">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>{{ error|escape }}</strong>
+        <!-- Demo Buttons -->
+        <div class="text-center mb-4">
+          <button type="button" class="btn btn-outline-primary mx-2" onclick="fillDemo('employee')">
+            <i class="icon-user mr-2"></i>Demo Employee
+          </button>
+          <button type="button" class="btn btn-outline-success mx-2" onclick="fillDemo('employer')">
+            <i class="icon-briefcase mr-2"></i>Demo Employer
+          </button>
         </div>
-        {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-        <div class="alert alert-danger alert-dismissable">
-          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-          <strong>{{ error|escape }}</strong>
-        </div>
-        {% endfor %}
-        {% endif %}
-        <div class="mb-4 text-center">
-          <button type="button" class="btn btn-outline-primary mx-2" onclick="fillDemo('employee')">Demo Employee</button>
-          <button type="button" class="btn btn-outline-success mx-2" onclick="fillDemo('employer')">Demo Employer</button>
-        </div>
-        <form method="POST" action="#" class="p-4 border rounded">
-          {% csrf_token %}
-          {% for field in form %}
-          <div class="row form-group">
-            <div class="col-md-12 mb-3 mb-md-0">
-              
-              <label class="text-black" for="id_{{ field.name }}">{{ field.label }}</label>
-              <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}"
-                id="id_{{ field.name }}" placeholder="{{ field.field.widget.attrs.placeholder }}">
-            </div>
-          </div>
 
-          {% endfor %}
-          <div class="row form-group">
-            <div class="col-md-12">
-              <input type="submit" value="Sign In" class="btn px-4 btn-primary text-white">
+        <!-- Login/Register Tabs -->
+        <div class="card shadow-lg border-0">
+          <div class="card-header bg-white border-0">
+            <ul class="nav nav-tabs card-header-tabs" id="authTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">
+                  <!-- <i class="icon-sign-in mr-2"></i>Sign In -->
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab">
+                  <!-- <i class="icon-user-plus mr-2"></i>Sign Up -->
+                </button>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="card-body p-5">
+            <div class="tab-content" id="authTabsContent">
+              <!-- Login Tab -->
+              <div class="tab-pane fade show active" id="login" role="tabpanel">
+                {% if form.errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <i class="icon-exclamation-triangle mr-2"></i>
+                  <strong>Login Error:</strong> Please check your credentials and try again.
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                {% endif %}
+                
+                <form method="POST" action="#" class="needs-validation" novalidate>
+                  {% csrf_token %}
+                  
+                  <div class="mb-4">
+                    <label class="form-label fw-bold" for="id_email">
+                      <i class="icon-envelope mr-2"></i>Email Address
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="icon-envelope text-muted"></i>
+                      </span>
+                      <input type="email" class="form-control border-start-0" name="email" id="id_email" 
+                             placeholder="Enter your email" required>
+                    </div>
+                    <div class="invalid-feedback">
+                      Please enter a valid email address.
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <label class="form-label fw-bold" for="id_password">
+                      <i class="icon-lock mr-2"></i>Password
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="icon-lock text-muted"></i>
+                      </span>
+                      <input type="password" class="form-control border-start-0" name="password" id="id_password" 
+                             placeholder="Enter your password" required>
+                      <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword">
+                        <i class="icon-eye" id="eyeIcon"></i>
+                      </button>
+                    </div>
+                    <div class="invalid-feedback">
+                      Please enter your password.
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="rememberMe">
+                      <label class="form-check-label" for="rememberMe">
+                        Remember me
+                      </label>
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary w-100 btn-lg mb-4">
+                    <i class="icon-sign-in mr-2"></i>Sign In
+                  </button>
+                </form>
+
+                <!-- Social Login -->
+                <div class="text-center">
+                  <!-- <p class="text-muted mb-3">Or continue with</p> -->
+                  <div class="row g-2">
+                    <div class="col-6">
+                      <button class="btn  w-100" type="button">
+                        <!-- <i class="icon-google mr-2"></i>Google -->
+                      </button>
+                    </div>
+                    <div class="col-6">
+                      <button class="btn w-100" type="button">
+                        <!-- <i class="icon-linkedin mr-2"></i>LinkedIn -->
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Register Tab -->
+              <div class="tab-pane fade" id="register" role="tabpanel">
+                <div class="text-center mb-4">
+                  <h5 class="text-muted">Choose your account type</h5>
+                </div>
+                
+                <div class="row g-3 mb-4">
+                  <div class="col-6">
+                    <div class="card border-2 h-100 account-type-card" data-type="employee">
+                      <div class="card-body text-center p-3">
+                        <i class="icon-user text-primary" style="font-size: 2rem;"></i>
+                        <h6 class="mt-2 mb-1">Job Seeker</h6>
+                        <small class="text-muted">Find your dream job</small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="card border-2 h-100 account-type-card" data-type="employer">
+                      <div class="card-body text-center p-3">
+                        <i class="icon-briefcase text-success" style="font-size: 2rem;"></i>
+                        <h6 class="mt-2 mb-1">Employer</h6>
+                        <small class="text-muted">Hire top talent</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-center">
+                  <a href="{% url 'account:employee-registration' %}" class="btn btn-primary btn-lg me-3">
+                    <i class="icon-user mr-2"></i>Sign Up as Job Seeker
+                  </a>
+                  <a href="{% url 'account:employer-registration' %}" class="btn btn-success btn-lg">
+                    <i class="icon-briefcase mr-2"></i>Sign Up as Employer
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
-        </form>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="text-center mt-4">
+          <p class="text-muted">
+            By signing in, you agree to our 
+            <a href="#" class="text-decoration-none">Terms of Service</a> and 
+            <a href="#" class="text-decoration-none">Privacy Policy</a>
+          </p>
+        </div>
       </div>
-
     </div>
   </div>
 </section>
 
-
 {% endblock %}
+
 {% block extra_scripts %}
 <script>
+// Password visibility toggle
+document.getElementById('togglePassword').addEventListener('click', function() {
+    const passwordInput = document.getElementById('id_password');
+    const eyeIcon = document.getElementById('eyeIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('icon-eye');
+        eyeIcon.classList.add('icon-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('icon-eye-slash');
+        eyeIcon.classList.add('icon-eye');
+    }
+});
+
+// Account type selection
+document.querySelectorAll('.account-type-card').forEach(card => {
+    card.addEventListener('click', function() {
+        // Remove active class from all cards
+        document.querySelectorAll('.account-type-card').forEach(c => {
+            c.classList.remove('border-primary');
+            c.classList.add('border-light');
+        });
+        
+        // Add active class to clicked card
+        this.classList.remove('border-light');
+        this.classList.add('border-primary');
+    });
+});
+
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+// Demo fill functions
 function fillDemo(type) {
-  if(type === 'employee') {
-    document.getElementById('id_email').value = 'employee@gmail.com';
-    document.getElementById('id_password').value = 'Employee@@50000';
-  } else if(type === 'employer') {
-    document.getElementById('id_email').value = 'employer@gmail.com';
-    document.getElementById('id_password').value = 'Employer@@50000';
-  }
+    if(type === 'employee') {
+        document.getElementById('id_email').value = 'employee@gmail.com';
+        document.getElementById('id_password').value = 'Employee@@50000';
+    } else if(type === 'employer') {
+        document.getElementById('id_email').value = 'employer@gmail.com';
+        document.getElementById('id_password').value = 'Employer@@50000';
+    }
 }
+
+// Add smooth animations
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate form elements on load
+    const formElements = document.querySelectorAll('.form-control, .btn');
+    formElements.forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            el.style.transition = 'all 0.5s ease';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
 </script>
+
+<style>
+.account-type-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.account-type-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.account-type-card.border-primary {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+    color: #0d6efd;
+    background: none;
+    border-bottom: 2px solid #0d6efd;
+}
+
+.input-group-text {
+    border: 1px solid #dee2e6;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-lg {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+}
+</style>
 {% endblock %}

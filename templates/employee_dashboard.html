@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employer Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,500,700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="flex min-h-screen">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-lg hidden md:flex flex-col p-6">
+      <h2 class="text-xl font-bold text-indigo-700 mb-8">Recruitment Panel</h2>
+      <nav class="flex-1">
+        <ul class="space-y-3 text-sm">
+          <li class="font-semibold bg-indigo-100 text-indigo-700 px-4 py-2 rounded flex items-center"><span class="mr-3">🏢</span> Recruitment</li>
+          <li class="hover:bg-indigo-50 px-4 py-2 rounded flex items-center"><span class="mr-3">👤</span> Employee</li>
+          <li class="hover:bg-indigo-50 px-4 py-2 rounded flex items-center"><span class="mr-3">💰</span> Payroll</li>
+          <li class="hover:bg-indigo-50 px-4 py-2 rounded flex items-center"><span class="mr-3">📅</span> Schedule</li>
+        </ul>
+
+        <div class="mt-10">
+          <h3 class="text-xs text-gray-400 uppercase mb-2">Departments</h3>
+          <ul class="space-y-2 text-sm">
+            <li class="hover:bg-indigo-50 px-4 py-2 rounded flex items-center"><span class="mr-3">💼</span> Business & Marketing</li>
+            <li class="hover:bg-indigo-50 px-4 py-2 rounded flex items-center"><span class="mr-3">🎨</span> Design</li>
+            <li class="hover:bg-indigo-50 px-4 py-2 rounded flex items-center"><span class="mr-3">🗂️</span> Project Manager</li>
+            <li class="hover:bg-indigo-50 px-4 py-2 rounded flex items-center"><span class="mr-3">🧑‍💼</span> Human Resources</li>
+          </ul>
+        </div>
+
+        <div class="mt-10">
+          <h3 class="text-xs text-gray-400 uppercase mb-2">Settings</h3>
+          <ul>
+            <li class="hover:bg-indigo-50 px-4 py-2 rounded flex items-center"><span class="mr-3">⚙️</span> Settings</li>
+          </ul>
+        </div>
+      </nav>
+
+      <button class="mt-8 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">Logout</button>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      
+      <!-- Topbar -->
+      <header class="flex items-center justify-between px-6 py-4 bg-white shadow-sm">
+        <input type="text" placeholder="Search jobs, candidates..." class="w-1/2 px-4 py-2 border border-gray-200 rounded-lg focus:ring-indigo-300 focus:outline-none" />
+        <div class="flex items-center gap-4">
+          <button class="text-xl">❤️</button>
+          <button class="bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">Sign In</button>
+          <div class="flex items-center gap-2">
+            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">MS</div>
+            <span>Mary Smith</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Body -->
+      <main class="flex-1 p-6 bg-gray-50 overflow-y-auto">
+        <h1 class="text-2xl font-semibold text-indigo-700 mb-6">Recruitment Overview</h1>
+
+        <!-- Job Roles Summary -->
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+          <div class="bg-white p-4 rounded-xl shadow text-center">
+            <div class="text-2xl">🎨</div>
+            <div class="font-medium">UI/UX Designer</div>
+            <div class="text-sm text-gray-500">24,875</div>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow text-center">
+            <div class="text-2xl">🖌️</div>
+            <div class="font-medium">Graphic Designer</div>
+            <div class="text-sm text-gray-500">7,820</div>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow text-center">
+            <div class="text-2xl">🔍</div>
+            <div class="font-medium">SEO Specialist</div>
+            <div class="text-sm text-gray-500">10,204</div>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow text-center">
+            <div class="text-2xl">🧑‍💻</div>
+            <div class="font-medium">Project Assistant</div>
+            <div class="text-sm text-gray-500">9,706</div>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow text-center">
+            <div class="text-2xl">🎬</div>
+            <div class="font-medium">3D Animation</div>
+            <div class="text-sm text-gray-500">11,703</div>
+          </div>
+        </div>
+
+        <!-- Filters & Create Button -->
+        <div class="flex justify-between items-center mb-6">
+          <div class="flex gap-2">
+            <button class="px-4 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">Designer</button>
+            <button class="px-4 py-1.5 bg-white text-indigo-700 border border-indigo-200 rounded hover:bg-indigo-50 text-sm">Marketer</button>
+            <button class="px-4 py-1.5 bg-white text-indigo-700 border border-indigo-200 rounded hover:bg-indigo-50 text-sm">Developer</button>
+          </div>
+          <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">+ Create New Job</button>
+        </div>
+
+        <!-- Job Listings -->
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
+            <div class="flex justify-between text-xs mb-2">
+              <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Onsite</span>
+              <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded">Full Time</span>
+              <span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded">Remote</span>
+            </div>
+            <div class="text-lg font-semibold">UI/UX Designer</div>
+            <div class="text-sm text-gray-500">Active Duration</div>
+            <div class="flex gap-2 mt-2 text-xs">
+              <span class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">Figma</span>
+              <span class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">3+ yrs</span>
+              <span class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">Design</span>
+            </div>
+          </div>
+
+          <!-- Repeat job cards -->
+          <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
+            <div class="flex justify-between text-xs mb-2">
+              <span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded">Remote</span>
+              <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded">Full Time</span>
+            </div>
+            <div class="text-lg font-semibold">SEO Specialist</div>
+            <div class="text-sm text-gray-500">Active Duration</div>
+            <div class="flex gap-2 mt-2 text-xs">
+              <span class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">KW Research</span>
+              <span class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">Google Analytics</span>
+            </div>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl shadow hover:shadow-lg transition">
+            <div class="flex justify-between text-xs mb-2">
+              <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Onsite</span>
+              <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded">Full Time</span>
+            </div>
+            <div class="text-lg font-semibold">3D Animation</div>
+            <div class="text-sm text-gray-500">Active Duration</div>
+            <div class="flex gap-2 mt-2 text-xs">
+              <span class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">Blender</span>
+              <span class="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">Cinema4D</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

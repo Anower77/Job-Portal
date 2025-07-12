@@ -106,8 +106,10 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'template'),
+            # os.path.join(BASE_DIR, 'templates'),
             os.path.join(BASE_DIR, 'template/django_ckeditor_5'),
         ],
+        # 'DIRS': [BASE_DIR / 'templates'],  
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

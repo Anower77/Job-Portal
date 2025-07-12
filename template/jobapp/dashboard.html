@@ -1,272 +1,755 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load get_total_applicant %}
+
 {% block content %}
 
-<section class="section-hero overlay inner-page" id="home-section">
-    <!-- <h1 class="text-center font-weight-bold">Dashboard</h1> -->
+<!-- Dashboard Header -->
+<section class="section-hero overlay inner-page bg-image" id="home-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7">
+        <h1 class="text-white font-weight-bold">Dashboard</h1>
+        <p class="text-white-50">Welcome back, {{ user.first_name|default:user.email }}!</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section class="site-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 mb-5">
-                {% include 'messages.html' %}
+<section class="site-section py-5">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar Navigation -->
+      <div class="col-lg-3 mb-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-white border-0">
+            <h5 class="mb-0"><i class="icon-user mr-2"></i>Navigation</h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+              <a href="#overview" class="list-group-item list-group-item-action active" data-toggle="list">
+                <i class="icon-dashboard mr-2"></i>Overview
+              </a>
+              {% if user.role == "employer" %}
+              <a href="#jobs" class="list-group-item list-group-item-action" data-toggle="list">
+                <i class="icon-briefcase mr-2"></i>My Jobs
+              </a>
+              <a href="#applicants" class="list-group-item list-group-item-action" data-toggle="list">
+                <i class="icon-users mr-2"></i>Applicants
+              </a>
+              {% else %}
+              <a href="#applications" class="list-group-item list-group-item-action" data-toggle="list">
+                <i class="icon-file-text mr-2"></i>My Applications
+              </a>
+              <a href="#saved" class="list-group-item list-group-item-action" data-toggle="list">
+                <i class="icon-heart mr-2"></i>Saved Jobs
+              </a>
+              <a href="#profile" class="list-group-item list-group-item-action" data-toggle="list">
+                <i class="icon-user mr-2"></i>Profile
+              </a>
+              {% endif %}
+              <a href="#settings" class="list-group-item list-group-item-action" data-toggle="list">
+                <i class="icon-cog mr-2"></i>Settings
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                <div class="card">
-                    {% if user.role == "employer" %}
-                    <h3 class="card-header text-center">My All Jobs</h3>
-                    <!-- Employer Tracking Section -->
-                    <div class="mb-4 p-3">
-                        <h4 class="text-center p-3">   </h4>
-                        <div class="row text-center">
-                            <div class="col-md-3 col-6 mb-2">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Total Applicants</h5>
-                                        <p class="card-text display-4">{{ total_applicants_count }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-2">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Pending</h5>
-                                        <p class="card-text display-4">{{ pending_count }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-2">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Accepted</h5>
-                                        <p class="card-text display-4">{{ accepted_count }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-2">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Rejected</h5>
-                                        <p class="card-text display-4">{{ rejected_count }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+      <!-- Main Content -->
+      <div class="col-lg-9">
+        {% include 'messages.html' %}
+        
+        <div class="tab-content">
+          <!-- Overview Tab -->
+          <div class="tab-pane fade show active" id="overview">
+            <div class="row mb-4">
+              <div class="col-12">
+                <h4 class="mb-3">Overview</h4>
+              </div>
+            </div>
+
+            {% if user.role == "employer" %}
+            <!-- Employer Stats Cards -->
+            <div class="row mb-4">
+              <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-primary text-white h-100">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="card-title">Total Jobs</h6>
+                        <h3 class="mb-0">{{ jobs|length|default:"0" }}</h3>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="icon-briefcase" style="font-size: 2rem;"></i>
+                      </div>
                     </div>
-                    <!-- End Employer Tracking Section -->
-                    {% if jobs %}
-                    <table class="table text-center mt-5">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>Job Title</th>
-                                <th>Posted Date</th>
-                                <th>Date Expiring</th>
-                                <th>Status</th>
-                                <th>Applicants</th>
-                                <th>Actions</th>
-                            </tr>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-success text-white h-100">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="card-title">Total Applicants</h6>
+                        <h3 class="mb-0">{{ total_applicants_count|default:"0" }}</h3>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="icon-users" style="font-size: 2rem;"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-warning text-white h-100">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="card-title">Pending</h6>
+                        <h3 class="mb-0">{{ pending_count|default:"0" }}</h3>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="icon-clock-o" style="font-size: 2rem;"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-info text-white h-100">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="card-title">Accepted</h6>
+                        <h3 class="mb-0">{{ accepted_count|default:"0" }}</h3>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="icon-check-circle" style="font-size: 2rem;"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="row">
+              <div class="col-md-8 mb-4">
+                <div class="card shadow-sm border-0">
+                  <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="icon-activity mr-2"></i>Recent Activity</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="timeline">
+                      <div class="timeline-item">
+                        <div class="timeline-marker bg-primary"></div>
+                        <div class="timeline-content">
+                          <h6 class="mb-1">New application received</h6>
+                          <p class="text-muted mb-0">John Doe applied for Software Engineer position</p>
+                          <small class="text-muted">2 hours ago</small>
+                        </div>
+                      </div>
+                      <div class="timeline-item">
+                        <div class="timeline-marker bg-success"></div>
+                        <div class="timeline-content">
+                          <h6 class="mb-1">Job posted successfully</h6>
+                          <p class="text-muted mb-0">Senior Developer position is now live</p>
+                          <small class="text-muted">1 day ago</small>
+                        </div>
+                      </div>
+                      <div class="timeline-item">
+                        <div class="timeline-marker bg-warning"></div>
+                        <div class="timeline-content">
+                          <h6 class="mb-1">Application status updated</h6>
+                          <p class="text-muted mb-0">5 applications moved to interview stage</p>
+                          <small class="text-muted">2 days ago</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0">
+                  <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="icon-chart mr-2"></i>Quick Stats</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                      <span>Profile Views</span>
+                      <span class="font-weight-bold">1,234</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                      <span>Job Reach</span>
+                      <span class="font-weight-bold">5,678</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                      <span>Response Rate</span>
+                      <span class="font-weight-bold text-success">85%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <span>Avg. Response Time</span>
+                      <span class="font-weight-bold">2.3 days</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {% else %}
+            <!-- Employee Stats Cards -->
+            <div class="row mb-4">
+              <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-primary text-white h-100">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="card-title">Applied Jobs</h6>
+                        <h3 class="mb-0">{{ appliedjobs|length|default:"0" }}</h3>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="icon-file-text" style="font-size: 2rem;"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-success text-white h-100">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="card-title">Saved Jobs</h6>
+                        <h3 class="mb-0">{{ savedjobs|length|default:"0" }}</h3>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="icon-heart" style="font-size: 2rem;"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-warning text-white h-100">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="card-title">Pending</h6>
+                        <h3 class="mb-0">{{ appliedjobs|length|default:"0" }}</h3>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="icon-clock-o" style="font-size: 2rem;"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-3 col-sm-6 mb-3">
+                <div class="card bg-info text-white h-100">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="card-title">Accepted</h6>
+                        <h3 class="mb-0">{{ appliedjobs|length|default:"0" }}</h3>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="icon-check-circle" style="font-size: 2rem;"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Applications -->
+            <div class="row">
+              <div class="col-md-8 mb-4">
+                <div class="card shadow-sm border-0">
+                  <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="icon-activity mr-2"></i>Recent Applications</h5>
+                  </div>
+                  <div class="card-body">
+                    {% if appliedjobs %}
+                    <div class="table-responsive">
+                      <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                          </tr>
                         </thead>
                         <tbody>
-                            {% for job in jobs %}
-                            <tr id="row_{{ job.id }}">
-                                <td class="text-left"><a href="{% url 'jobapp:single-job' job.id %}">{{ job.title }}</a></td>
-                                <td>{{ job.timestamp | date:'M d, Y' }}</td>
-                                <td>{{ job.last_date | date:'M d, Y' }}</td>
-                                <td>
-                                    {% if job.is_published %}
-                                        <span class="badge badge-info">Published</span>
-                                    {% else %}
-                                        <span class="badge badge-danger px-2">Pending</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% get_total_applicant job as applicant_count %}
-                                    {% if applicant_count %}
-                                    <a href="{% url 'jobapp:applicants' job.id %}">
-                                        <i class="fa fa-users"></i>
-                                        <span class="badge badge-success text-white">
-                                            {% if applicant_count > 1 %}
-                                                {{ applicant_count }} Applicants
-                                            {% else %}
-                                                {{ applicant_count }} Applicant
-                                            {% endif %}
-                                        </span>
-                                    </a>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <a class="btn btn-info btn-sm" href="{% url 'jobapp:edit-job' job.id %}" role="button">Edit</a>
-                                    {% if job.is_published %}
-                                        {% if not job.is_closed %}
-                                        <span id="change_job_status_{{ job.id }}">
-                                            <button onclick="call_sw_alert_func('{{ job.id }}', 'Once clicked, your post will be marked as completed', 'close')" 
-                                                    class="text-white btn btn-success btn-sm">Close</button>
-                                        </span>
-                                        {% else %}
-                                        <a class="text-white btn btn-success btn-sm" role="button">Closed</a>
-                                        {% endif %}
-                                    {% endif %}
-                                    <button onclick="call_sw_alert_func('{{ job.id }}', 'Once deleted, you will not be able to recover this job!', 'delete')" 
-                                            class="btn btn-danger btn-sm">Delete</button>
-                                </td>
-                            </tr>
-                            {% endfor %}
+                          {% for application in appliedjobs|slice:":5" %}
+                          <tr>
+                            <td>
+                              <a href="{% url 'jobapp:single-job' application.job.id %}" class="text-decoration-none">
+                                {{ application.job.title }}
+                              </a>
+                            </td>
+                            <td>{{ application.job.company_name }}</td>
+                            <td>{{ application.timestamp|date:"M d, Y" }}</td>
+                            <td>
+                              {% if application.status == 'pending' %}
+                              <span class="badge badge-warning">Pending</span>
+                              {% elif application.status == 'accepted' %}
+                              <span class="badge badge-success">Accepted</span>
+                              {% elif application.status == 'rejected' %}
+                              <span class="badge badge-danger">Rejected</span>
+                              {% else %}
+                              <span class="badge badge-secondary">Applied</span>
+                              {% endif %}
+                            </td>
+                          </tr>
+                          {% endfor %}
                         </tbody>
-                    </table>
+                      </table>
+                    </div>
                     {% else %}
-                    <p class="m-5">You don't have any jobs yet! <a href="{% url 'jobapp:create-job' %}">Create a new one.</a></p>
-                    {% endif %}
-                    {% elif user.role == "employee" %}
-
-                    <!-- Employee Tracking Section -->
-                    <div class="mb-4 p-4 border border-3">
-                        <h4 class="text-center p-3">My Job Application Stats</h4>
-                        <div class="row text-center">
-                            <div class="col-md-3 col-6 mb-2">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Total Applied</h5>
-                                        <p class="card-text display-4">{{ appliedjobs|length }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6 mb-2">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Bookmarked</h5>
-                                        <p class="card-text display-4">{{ savedjobs|length }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-4 mb-2">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h6 class="card-title">Pending</h6>
-                                        <p class="card-text h3">
-                                            {{ appliedjobs|status_count:'pending' }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-4 mb-2">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h6 class="card-title">Accepted</h6>
-                                        <p class="card-text h3">
-                                            {{ appliedjobs|status_count:'accepted' }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-4 mb-2">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h6 class="card-title">Rejected</h6>
-                                        <p class="card-text h3">
-                                            {{ appliedjobs|status_count:'rejected' }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End Employee Tracking Section -->
-
-                    <ul class="mb-3 nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Bookmarked Jobs</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Applied Jobs</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                            <h5 class="card-header text-center">Bookmarked Posts</h5>
-                            {% if savedjobs %}
-                            <table class="table text-center mt-5">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>Job Title</th>
-                                        <th>Posted Date</th>
-                                        <th>Date Expiring</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for job in savedjobs %}
-                                    <tr id="row_{{ job.id }}">
-                                        <td><a href="{% url 'jobapp:single-job' job.job.id %}">{{ job.job.title }}</a></td>
-                                        <td>{{ job.timestamp | date:'M d, Y' }}</td>
-                                        <td>{{ job.job.last_date | date:'M d, Y' }}</td>
-                                        <td>
-                                            <button onclick="call_sw_alert_func('{{ job.id }}', 'Once deleted, this post will be removed from your favorites!')" class="btn btn-danger btn-sm">Delete</button>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            {% else %}
-                            <p class="m-5">You haven't saved any jobs yet!</p>
-                            {% endif %}
-                        </div>
-                        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-                            <h5 class="card-header text-center">Applied Posts</h5>
-                            {% if appliedjobs %}
-                            <table class="table text-center mt-5">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>Job Title</th>
-                                        <th>Posted Date</th>
-                                        <th>Date Expiring</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for job in appliedjobs %}
-                                    <tr id="row_{{ job.id }}">
-                                        <td><a href="{% url 'jobapp:single-job' job.job.id %}">{{ job.job.title }}</a></td>
-                                        <td>{{ job.timestamp | date:'M d, Y' }}</td>
-                                        <td>{{ job.job.last_date | date:'M d, Y' }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            {% else %}
-                            <p class="m-5">You haven't applied to any jobs yet!</p>
-                            {% endif %}
-                        </div>
+                    <div class="text-center py-4">
+                      <i class="icon-file-text text-muted" style="font-size: 3rem;"></i>
+                      <h6 class="mt-3 text-muted">No applications yet</h6>
+                      <p class="text-muted">Start applying to jobs to see your applications here</p>
+                      <a href="{% url 'jobapp:job-list' %}" class="btn btn-primary">Browse Jobs</a>
                     </div>
                     {% endif %}
+                  </div>
                 </div>
+              </div>
+              
+              <div class="col-md-4 mb-4">
+                <div class="card shadow-sm border-0">
+                  <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="icon-chart mr-2"></i>Profile Stats</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                      <span>Profile Views</span>
+                      <span class="font-weight-bold">456</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                      <span>Skills Match</span>
+                      <span class="font-weight-bold text-success">92%</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                      <span>Response Rate</span>
+                      <span class="font-weight-bold text-info">78%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <span>Avg. Response</span>
+                      <span class="font-weight-bold">1.5 days</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
-    </div>
-</section>
+            {% endif %}
+          </div>
 
+          {% if user.role == "employer" %}
+          <!-- Jobs Tab -->
+          <div class="tab-pane fade" id="jobs">
+            <div class="row mb-4">
+              <div class="col-12 d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">My Jobs</h4>
+                <a href="{% url 'jobapp:create-job' %}" class="btn btn-primary">
+                  <i class="icon-plus mr-2"></i>Post New Job
+                </a>
+              </div>
+            </div>
+
+            {% if jobs %}
+            <div class="card shadow-sm border-0">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Job Title</th>
+                        <th>Posted Date</th>
+                        <th>Expires</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for job in jobs %}
+                      <tr>
+                        <td>
+                          <a href="{% url 'jobapp:single-job' job.id %}" class="text-decoration-none font-weight-bold">
+                            {{ job.title }}
+                          </a>
+                        </td>
+                        <td>{{ job.timestamp|date:"M d, Y" }}</td>
+                        <td>{{ job.last_date|date:"M d, Y" }}</td>
+                        <td>
+                          {% if job.is_published %}
+                          <span class="badge badge-success">Published</span>
+                          {% else %}
+                          <span class="badge badge-warning">Pending</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          <div class="btn-group" role="group">
+                            <a href="{% url 'jobapp:edit-job' job.id %}" class="btn btn-sm btn-outline-primary">
+                              <i class="icon-edit"></i>
+                            </a>
+                            <a href="{% url 'jobapp:applicants' job.id %}" class="btn btn-sm btn-outline-info">
+                              <i class="icon-users"></i>
+                            </a>
+                            <button class="btn btn-sm btn-outline-danger delete-job" data-job-id="{{ job.id }}">
+                              <i class="icon-trash"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+              <i class="icon-briefcase text-muted" style="font-size: 4rem;"></i>
+              <h5 class="mt-3 text-muted">No jobs posted yet</h5>
+              <p class="text-muted">Start posting jobs to see them here</p>
+              <a href="{% url 'jobapp:create-job' %}" class="btn btn-primary">Post Your First Job</a>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Applicants Tab -->
+          <div class="tab-pane fade" id="applicants">
+            <div class="row mb-4">
+              <div class="col-12">
+                <h4 class="mb-0">All Applicants</h4>
+              </div>
+            </div>
+
+            <div class="text-center py-5">
+              <i class="icon-users text-muted" style="font-size: 4rem;"></i>
+              <h5 class="mt-3 text-muted">Applicants will be shown here</h5>
+              <p class="text-muted">This section will display all applicants for your jobs</p>
+            </div>
+          </div>
+          {% else %}
+          
+          <!-- Applications Tab -->
+          <div class="tab-pane fade" id="applications">
+            <div class="row mb-4">
+              <div class="col-12">
+                <h4 class="mb-0">My Applications</h4>
+              </div>
+            </div>
+
+            {% if appliedjobs %}
+            <div class="card shadow-sm border-0">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Applied Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for application in appliedjobs %}
+                      <tr>
+                        <td>
+                          <a href="{% url 'jobapp:single-job' application.job.id %}" class="text-decoration-none">
+                            {{ application.job.title }}
+                          </a>
+                        </td>
+                        <td>{{ application.job.company_name }}</td>
+                        <td>{{ application.timestamp|date:"M d, Y" }}</td>
+                        <td>
+                          {% if application.status == 'pending' %}
+                          <span class="badge badge-warning">Pending</span>
+                          {% elif application.status == 'accepted' %}
+                          <span class="badge badge-success">Accepted</span>
+                          {% elif application.status == 'rejected' %}
+                          <span class="badge badge-danger">Rejected</span>
+                          {% else %}
+                          <span class="badge badge-secondary">Applied</span>
+                          {% endif %}
+                        </td>
+                        <td>
+                          <a href="{% url 'jobapp:single-job' application.job.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="icon-eye"></i> View
+                          </a>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+              <i class="icon-file-text text-muted" style="font-size: 4rem;"></i>
+              <h5 class="mt-3 text-muted">No applications yet</h5>
+              <p class="text-muted">Start applying to jobs to see your applications here</p>
+              <a href="{% url 'jobapp:job-list' %}" class="btn btn-primary">Browse Jobs</a>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Saved Jobs Tab -->
+          <div class="tab-pane fade" id="saved">
+            <div class="row mb-4">
+              <div class="col-12">
+                <h4 class="mb-0">Saved Jobs</h4>
+              </div>
+            </div>
+
+            {% if savedjobs %}
+            <div class="row">
+              {% for saved in savedjobs %}
+              <div class="col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                      <div>
+                        <h5 class="card-title">
+                          <a href="{% url 'jobapp:single-job' saved.job.id %}" class="text-decoration-none">
+                            {{ saved.job.title }}
+                          </a>
+                        </h5>
+                        <p class="text-muted mb-2">{{ saved.job.company_name }}</p>
+                      </div>
+                      <a href="{% url 'jobapp:delete-bookmark' saved.id %}" class="btn btn-sm btn-outline-danger">
+                        <i class="icon-trash"></i>
+                      </a>
+                    </div>
+                    <div class="d-flex align-items-center text-muted small mb-3">
+                      <i class="icon-room mr-1"></i>
+                      <span>{{ saved.job.location }}</span>
+                      <span class="mx-2">•</span>
+                      <i class="icon-clock-o mr-1"></i>
+                      <span>{{ saved.job.timestamp|date:"M d" }}</span>
+                    </div>
+                    <p class="card-text text-muted">{{ saved.job.description|truncatewords:15 }}</p>
+                    <a href="{% url 'jobapp:single-job' saved.job.id %}" class="btn btn-primary btn-sm">
+                      View Details
+                    </a>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+              <i class="icon-heart text-muted" style="font-size: 4rem;"></i>
+              <h5 class="mt-3 text-muted">No saved jobs yet</h5>
+              <p class="text-muted">Save jobs you're interested in to see them here</p>
+              <a href="{% url 'jobapp:job-list' %}" class="btn btn-primary">Browse Jobs</a>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Profile Tab -->
+          <div class="tab-pane fade" id="profile">
+            <div class="row mb-4">
+              <div class="col-12">
+                <h4 class="mb-0">Profile</h4>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-8">
+                <div class="card shadow-sm border-0">
+                  <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="icon-user mr-2"></i>Profile Information</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="font-weight-bold">Full Name</label>
+                        <p>{{ user.get_full_name|default:"Not provided" }}</p>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="font-weight-bold">Email</label>
+                        <p>{{ user.email }}</p>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="font-weight-bold">Phone</label>
+                        <p>{{ user.phone|default:"Not provided" }}</p>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="font-weight-bold">Location</label>
+                        <p>{{ user.city|default:"Not provided" }}, {{ user.country|default:"" }}</p>
+                      </div>
+                    </div>
+                    <a href="{% url 'account:employee-edit-profile' %}" class="btn btn-primary">
+                      <i class="icon-edit mr-2"></i>Edit Profile
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="card shadow-sm border-0">
+                  <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="icon-chart mr-2"></i>Profile Stats</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="text-center mb-3">
+                      <img src="{% static 'images/default-profile.png' %}" alt="Profile" 
+                           class="rounded-circle" style="width: 100px; height: 100px;">
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Profile Views</span>
+                      <span class="font-weight-bold">456</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Applications</span>
+                      <span class="font-weight-bold">{{ appliedjobs|length }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                      <span>Saved Jobs</span>
+                      <span class="font-weight-bold">{{ savedjobs|length }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Settings Tab -->
+          <div class="tab-pane fade" id="settings">
+            <div class="row mb-4">
+              <div class="col-12">
+                <h4 class="mb-0">Settings</h4>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-8">
+                <div class="card shadow-sm border-0">
+                  <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="icon-cog mr-2"></i>Account Settings</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="font-weight-bold">Email Notifications</label>
+                        <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input" id="emailNotifications" checked>
+                          <label class="custom-control-label" for="emailNotifications">Receive email notifications</label>
+                        </div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="font-weight-bold">Job Alerts</label>
+                        <div class="custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input" id="jobAlerts" checked>
+                          <label class="custom-control-label" for="jobAlerts">Receive job alerts</label>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="btn btn-primary">Save Settings</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <div class="card shadow-sm border-0">
+                  <div class="card-header bg-white border-0">
+                    <h5 class="mb-0"><i class="icon-shield mr-2"></i>Security</h5>
+                  </div>
+                  <div class="card-body">
+                    <a href="#" class="btn btn-outline-primary btn-block mb-2">Change Password</a>
+                    <a href="#" class="btn btn-outline-warning btn-block mb-2">Two-Factor Auth</a>
+                    <a href="#" class="btn btn-outline-danger btn-block">Delete Account</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 {% endblock %}
 
 {% block extra_scripts %}
-    <script src="{% static 'js/sweet-alert.js' %}"></script>
-    <script src="{% static 'js/sweet-alert-ajax.js' %}"></script>
-    <script>
-      // On load
-      if(localStorage.theme === 'dark') {
-        document.body.classList.add('dark-mode');
-        document.getElementById('icon-sun').style.display = 'none';
-        document.getElementById('icon-moon').style.display = '';
-      } else {
-        document.body.classList.remove('dark-mode');
-        document.getElementById('icon-sun').style.display = '';
-        document.getElementById('icon-moon').style.display = 'none';
-      }
-      document.getElementById('dark-toggle').onclick = function() {
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        document.getElementById('icon-sun').style.display = isDark ? 'none' : '';
-        document.getElementById('icon-moon').style.display = isDark ? '' : 'none';
-        localStorage.theme = isDark ? 'dark' : 'light';
-      };
-    </script>
-{% endblock %}
+{% csrf_token %}
+<script>
+// Initialize Bootstrap tabs
+$(document).ready(function() {
+    // Tab functionality
+    $('.list-group-item').on('click', function(e) {
+        e.preventDefault();
+        $('.list-group-item').removeClass('active');
+        $(this).addClass('active');
+        
+        var target = $(this).attr('href');
+        $('.tab-pane').removeClass('show active');
+        $(target).addClass('show active');
+    });
+
+    // Delete job functionality
+    $('.delete-job').on('click', function() {
+        var jobId = $(this).data('job-id');
+        var row = $(this).closest('tr');
+        
+        if (confirm('Are you sure you want to delete this job?')) {
+            $.ajax({
+                url: '/jobapp/job/' + jobId + '/delete/',
+                method: 'DELETE',
+                headers: {
+                    'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(response) {
+                    if (response.status) {
+                        row.fadeOut();
+                        // Update stats
+                        var totalJobs = parseInt($('.card:contains("Total Jobs") h3').text());
+                        $('.card:contains("Total Jobs") h3').text(totalJobs - 1);
+                    }
+                },
+                error: function() {
+                    alert('Error deleting job');
+                }
+            });
+        }
+    });
+
+    // Animate counters
+    $('.card h3').each(function() {
+        var $this = $(this);
+        var countTo = parseInt($this.text());
+        
+        $({ countNum: 0 }).animate({
+            countNum: countTo
+        }, {
+            duration: 2000,
+            easing: 'swing',
+            step: function() {
+                $this.text(Math.floor(this.countNum));
+            },
+            complete: function() {
+                $this.text(countTo);
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

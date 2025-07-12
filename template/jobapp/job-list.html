@@ -2,56 +2,397 @@
 {% load static %}
 {% block content %}
 
-
-<!-- HOME -->
+<!-- Enhanced Hero Section -->
 <section class="section-hero overlay inner-page bg-image" id="home-section">
-  <!-- <div class="container">
+  <div class="container">
     <div class="row">
       <div class="col-md-7">
-        <h1 class="text-white font-weight-bold">Jobs</h1>
-        <div class="custom-breadcrumbs">
-          <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
-          <span class="text-white"><strong>Jobs</strong></span>
-        </div>
+        <h1 class="text-white font-weight-bold">Find Your Perfect Job</h1>
+        <p class="text-white-50">Browse thousands of opportunities and find the one that matches your skills</p>
       </div>
     </div>
-  </div> -->
-</section>
-
-<section id="ajax_listing_paginattion" class="site-section services-section bg-light block__62849" id="next-section">
-  <div class="container">
-
-    <div class="row">
-      {% for job in page_obj %}
-      <div class="col-6 col-md-6 col-lg-4 mb-4 mb-lg-5">
-        <a href="{% url 'jobapp:single-job' job.id %}" class="block__16443 min-h text-center d-block">
-          <span class="custom-icon mx-auto"><span class="icon-magnet d-block"></span></span>
-          <h3>{{ job.title }}</h3>
-          <ul class="job-listing-meta list-unstyled pl-3 mb-0">
-            <li class="menu-fix mb-2">
-              {% if job.job_type == '1' %}
-              <span class="badge badge-primary">
-                Full Time
-              </span>
-              {% elif job.job_type == '2'%}
-              <span class="badge badge-danger">
-                Part Time
-              </span>
-              {% else  %}
-              <span class="badge badge-info">
-                Internship
-              </span>
-              {% endif %}</li>
-            <li class="badge badge-secondary menu-fix mb-2"> {{ job.location }}</li>
-          </ul>
-          <p>{{ job.description | safe | truncatechars:150}}</p>
-        </a>
-      </div>
-      {% endfor %}
-    </div>
-    {% include 'jobapp/paginator.html' %}
-
   </div>
 </section>
 
-{% endblock content %}
+<section class="site-section py-5" id="job-listings">
+  <div class="container">
+    <!-- Search and Filter Header -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card shadow-sm border-0">
+          <div class="card-body p-4">
+            <form method="GET" action="{% url 'jobapp:job-list' %}" id="jobSearchForm">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="icon-search text-muted"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" name="search" 
+                           placeholder="Job title, keywords..." value="{{ request.GET.search|default:'' }}">
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <select name="job_type" class="form-select">
+                    <option value="">All Job Types</option>
+                    <option value="1" {% if request.GET.job_type == '1' %}selected{% endif %}>Full Time</option>
+                    <option value="2" {% if request.GET.job_type == '2' %}selected{% endif %}>Part Time</option>
+                    <option value="3" {% if request.GET.job_type == '3' %}selected{% endif %}>Internship</option>
+                    <option value="4">Remote</option>
+                    <option value="5">Contract</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <input type="text" class="form-control" name="location" 
+                         placeholder="Location" value="{{ request.GET.location|default:'' }}">
+                </div>
+                <div class="col-md-2">
+                  <button type="submit" class="btn btn-primary w-100">
+                    <i class="icon-search mr-2"></i>Search
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Sidebar Filters -->
+      <div class="col-lg-3 mb-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-white border-0">
+            <h5 class="mb-0"><i class="icon-filter mr-2"></i>Filters</h5>
+          </div>
+          <div class="card-body">
+            <!-- Job Type Filter -->
+            <div class="mb-4">
+              <h6 class="fw-bold mb-3">Job Type</h6>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="filter_job_type" value="1" id="fulltime">
+                <label class="form-check-label" for="fulltime">
+                  Full Time
+                </label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="filter_job_type" value="2" id="parttime">
+                <label class="form-check-label" for="parttime">
+                  Part Time
+                </label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="filter_job_type" value="3" id="internship">
+                <label class="form-check-label" for="internship">
+                  Internship
+                </label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="filter_job_type" value="4" id="remote">
+                <label class="form-check-label" for="remote">
+                  Remote
+                </label>
+              </div>
+            </div>
+
+            <!-- Experience Level Filter -->
+            <div class="mb-4">
+              <h6 class="fw-bold mb-3">Experience Level</h6>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="filter_experience" value="entry" id="entry">
+                <label class="form-check-label" for="entry">
+                  Entry Level
+                </label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="filter_experience" value="mid" id="mid">
+                <label class="form-check-label" for="mid">
+                  Mid Level
+                </label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="filter_experience" value="senior" id="senior">
+                <label class="form-check-label" for="senior">
+                  Senior Level
+                </label>
+              </div>
+            </div>
+
+            <!-- Salary Range Filter -->
+            <div class="mb-4">
+              <h6 class="fw-bold mb-3">Salary Range</h6>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="filter_salary" value="0-50k" id="salary1">
+                <label class="form-check-label" for="salary1">
+                  $0 - $50k
+                </label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="filter_salary" value="50k-100k" id="salary2">
+                <label class="form-check-label" for="salary2">
+                  $50k - $100k
+                </label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="filter_salary" value="100k+" id="salary3">
+                <label class="form-check-label" for="salary3">
+                  $100k+
+                </label>
+              </div>
+            </div>
+
+            <!-- Clear Filters -->
+            <button type="button" class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+              <i class="icon-refresh mr-2"></i>Clear Filters
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Listings -->
+      <div class="col-lg-9">
+        <!-- Results Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h5 class="mb-0">{{ page_obj.paginator.count|default:"0" }} Jobs Found</h5>
+            <small class="text-muted">Showing {{ page_obj.start_index|default:"0" }}-{{ page_obj.end_index|default:"0" }} of {{ page_obj.paginator.count|default:"0" }} results</small>
+          </div>
+          
+          <!-- Sort Options -->
+          <div class="d-flex align-items-center">
+            <label class="me-2 fw-bold">Sort by:</label>
+            <select class="form-select form-select-sm" style="width: auto;" onchange="sortJobs(this.value)">
+              <option value="relevance">Relevance</option>
+              <option value="recent">Most Recent</option>
+              <option value="salary_high">Salary (High to Low)</option>
+              <option value="salary_low">Salary (Low to High)</option>
+              <option value="company">Company Name</option>
+            </select>
+          </div>
+        </div>
+
+        {% if page_obj %}
+        <!-- Enhanced Job Cards -->
+        <div class="row" id="jobListings">
+          {% for job in page_obj %}
+          <div class="col-12 mb-4 job-card-item" data-job-type="{{ job.job_type }}" data-location="{{ job.location|lower }}">
+            <div class="card shadow-sm border-0 hover-lift h-100">
+              <div class="card-body p-4">
+                <div class="row align-items-center">
+                  <div class="col-md-2 text-center mb-3 mb-md-0">
+                    <img src="{% static 'images/job_logo_1.jpg' %}" alt="Company Logo" 
+                         class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                  </div>
+                  
+                  <div class="col-md-7">
+                    <div class="d-flex align-items-start mb-2">
+                      <div class="flex-grow-1">
+                        <h5 class="card-title mb-1">
+                          <a href="{% url 'jobapp:single-job' job.id %}" class="text-decoration-none">{{ job.title }}</a>
+                        </h5>
+                        <p class="text-muted mb-2">{{ job.company_name }}</p>
+                        <div class="d-flex align-items-center text-muted small mb-2">
+                          <i class="icon-room me-1"></i>
+                          <span>{{ job.location }}</span>
+                          <span class="mx-2">•</span>
+                          <i class="icon-clock-o me-1"></i>
+                          <span>{{ job.timestamp|date:"M d, Y" }}</span>
+                          <span class="mx-2">•</span>
+                          <i class="icon-users me-1"></i>
+                          <span>50+ applicants</span>
+                        </div>
+                        <p class="card-text text-muted mb-0">{{ job.description|truncatewords:25 }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-3 text-md-end">
+                    <div class="mb-3">
+                      {% if job.job_type == '1' %}
+                      <span class="badge bg-success">Full Time</span>
+                      {% elif job.job_type == '2' %}
+                      <span class="badge bg-warning">Part Time</span>
+                      {% else %}
+                      <span class="badge bg-info">Internship</span>
+                      {% endif %}
+                    </div>
+                    
+                    <div class="salary-info mb-3">
+                      <span class="text-success fw-bold">$60k - $90k</span>
+                      <br>
+                      <small class="text-muted">Annual</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                      <a href="{% url 'jobapp:single-job' job.id %}" class="btn btn-outline-primary btn-sm">
+                        View Details
+                      </a>
+                      <button class="btn btn-outline-secondary btn-sm" onclick="saveJob({{ job.id }})">
+                        <i class="icon-heart"></i> Save
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Enhanced Pagination -->
+        <div class="d-flex justify-content-center mt-5">
+          {% include 'jobapp/paginator.html' %}
+        </div>
+        
+        {% else %}
+        <!-- No Results -->
+        <div class="text-center py-5">
+          <i class="icon-search text-muted" style="font-size: 4rem;"></i>
+          <h4 class="mt-3 text-muted">No jobs found</h4>
+          <p class="text-muted">Try adjusting your search criteria or filters</p>
+          <button class="btn btn-primary" onclick="clearFilters()">Clear All Filters</button>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// Filter functionality
+function applyFilters() {
+    const form = document.getElementById('jobSearchForm');
+    const formData = new FormData(form);
+    
+    // Add checkbox filters
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => {
+        formData.append(checkbox.name, checkbox.value);
+    });
+    
+    // Build query string
+    const params = new URLSearchParams(formData);
+    window.location.href = `${window.location.pathname}?${params.toString()}`;
+}
+
+// Clear all filters
+function clearFilters() {
+    window.location.href = window.location.pathname;
+}
+
+// Sort jobs
+function sortJobs(sortBy) {
+    const currentUrl = new URL(window.location);
+    currentUrl.searchParams.set('sort', sortBy);
+    window.location.href = currentUrl.toString();
+}
+
+// Save job functionality
+function saveJob(jobId) {
+    // Add save job logic here
+    const button = event.target;
+    button.innerHTML = '<i class="icon-heart text-danger"></i> Saved';
+    button.classList.add('btn-success');
+    button.classList.remove('btn-outline-secondary');
+    
+    // Show success message
+    showNotification('Job saved successfully!', 'success');
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(notification);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+// Add hover effects
+document.addEventListener('DOMContentLoaded', function() {
+    // Add hover effects to job cards
+    document.querySelectorAll('.hover-lift').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.transition = 'transform 0.3s ease';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // Add filter change listeners
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            setTimeout(applyFilters, 500);
+        });
+    });
+});
+
+// Real-time search
+let searchTimeout;
+document.querySelector('input[name="search"]').addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        applyFilters();
+    }, 1000);
+});
+</script>
+
+<style>
+.hover-lift {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.job-card-item {
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.salary-info {
+    font-size: 0.9rem;
+}
+
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .col-md-2.text-center {
+        margin-bottom: 1rem;
+    }
+    
+    .col-md-3.text-md-end {
+        text-align: center !important;
+        margin-top: 1rem;
+    }
+}
+</style>
+{% endblock %}
